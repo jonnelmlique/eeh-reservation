@@ -1,0 +1,9 @@
+.continue-btn {
+    background-image: linear-gradient(to right, #d4af37, #6e5b1d);
+    color: white !important;
+    border: none !important;
+}
+
+.btn {
+    border-radius: 8px;
+}
