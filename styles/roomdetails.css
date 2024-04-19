@@ -90,7 +90,8 @@
 .form-group .btn:hover {
   color: #ffffff;
 }
-input[type="date"], input[type="time"] {
+input[type="date"],
+input[type="time"] {
   width: 20%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -98,14 +99,13 @@ input[type="date"], input[type="time"] {
   font-size: 16px;
   margin-top: 5px;
   margin-left: 10px;
-  
 }
-.checkin{
+.checkin {
   margin-right: 20px;
   font-size: 1.1rem;
   line-height: 1.6;
 }
-.checkout{
+.checkout {
   margin-right: 10px;
   font-size: 1.1rem;
   line-height: 1.6;

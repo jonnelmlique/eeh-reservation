@@ -14,11 +14,11 @@
 </head>
 
 <body>
-    <?php include("components/header.php"); ?>
+    <?php include ("components/header.php"); ?>
 
     <div class="row w-100">
         <div class="col-lg-1">
-            <?php include("components/sidebar.php"); ?>
+            <?php include ("components/sidebar.php"); ?>
         </div>
 
         <div class="col-lg-8 bg-white shadow-lg">
@@ -44,7 +44,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td>1</td>
                             <td>
                                 <p>
@@ -81,7 +81,49 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
-                        </tr>
+                        </tr> -->
+                        <?php
+                        include '../src/config/config.php';
+
+                        $sql = "SELECT rp.*, r.roomtype, r.roomnumber AS roomno 
+        FROM reservationprocess rp 
+        INNER JOIN room r ON rp.roomid = r.roomid";
+                        $result = $conn->query($sql);
+
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td>" . $row["recervationprocessid"] . "</td>";
+                                echo "<td>";
+                                echo "<b>Booking ID</b>: " . $row["recervationprocessid"] . "<br />";
+                                echo "<b>Name</b>: " . $row["firstname"] . " " . $row["lastname"] . "<br />";
+                                echo "<b>Phone No.</b>: " . $row["mobilenumber"];
+                                echo "</td>";
+                                echo "<td>";
+                                echo "<b>Room Type</b>: " . $row["roomtype"] . "<br />";
+                                echo "<b>Room No.</b>: " . $row["roomno"] . "<br />";
+                                echo "<b>Price</b>: Php" . $row["price"];
+                                echo "</td>";
+                                echo "<td>";
+                                echo "<b>Check-In</b>: " . $row["checkindate"] . " " . $row["checkintime"] . "<br />";
+                                echo "<b>Check-Out</b>: " . $row["checkoutdate"] . " " . $row["checkouttime"] . "<br />";
+                                echo "<b>Paid</b>: Php" . $row["reservationprice"] . "<br />";
+                                echo "<b>Date</b>: " . $row["checkoutdate"];
+                                echo "</td>";
+                                echo "<td>";
+                                echo "<button class='btn btn-success w-100' style='border-radius: 8px' data-bs-toggle='modal' data-bs-target='#confirmModal'>Confirm</button><br />";
+                                echo "<button class='btn btn-danger w-100 mt-2' style='border-radius: 8px' data-bs-toggle='modal' data-bs-target='#cancelModal'>Cancel</button>";
+                                echo "</td>";
+                                echo "</tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='5'>No reservations found</td></tr>";
+                        }
+
+                        // Close database connection
+                        $conn->close();
+                        ?>
+
                     </tbody>
                 </table>
             </div>

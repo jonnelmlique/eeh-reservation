@@ -20,7 +20,25 @@
         <div class="container">
             <div class="row">
                 <div class="col-8">
-
+                    <?php
+                    session_start();
+                    include './src/config/config.php';
+                    if (!isset($_SESSION['data_inserted'])) {
+                        $sql = "INSERT INTO guestusers () VALUES ()";
+                        if ($conn->query($sql) === TRUE) {
+                            $sql_select = "SELECT guestuserid FROM guestusers ORDER BY timestamp_column DESC LIMIT 1";
+                            $result = $conn->query($sql_select);
+                            if ($result->num_rows > 0) {
+                                $row = $result->fetch_assoc();
+                                $guestuserid = $row['guestuserid'];
+                                $_SESSION['guestuserid'] = $guestuserid;
+                                $_SESSION['data_inserted'] = true;
+                            } else {
+                            }
+                        } else {
+                        }
+                    }
+                    ?>
 
 
                     <div class="row mt-4">
@@ -73,7 +91,6 @@
                     <br />
 
                     <?php
-                    include './src/config/config.php';
 
                     $sql = "SELECT * FROM room";
                     $result = $conn->query($sql);

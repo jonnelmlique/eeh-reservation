@@ -57,13 +57,6 @@
                 <input type="date" id="checkInDate" name="checkInDate">
                 <input type="time" id="checkInTime" name="checkInTime">
 
-
-                <!-- <div class="form-group">
-                    <label for="checkInTime">Check-in Time:</label>
-                    <input type="time" id="checkInTime" name="checkInTime">
-                </div> -->
-
-
                 <label class="checkout" for="checkOutDate">Check-out Date & Time:</label>
                 <input type="date" id="checkOutDate" name="checkOutDate"> <input type="time" id="checkOutTime"
                     name="checkOutTime">
