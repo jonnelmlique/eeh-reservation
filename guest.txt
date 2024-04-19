@@ -1,0 +1,42 @@
+<?php
+session_start();
+include './src/config/config.php';
+
+if (!isset($_SESSION['data_inserted'])) {
+    $sql = "INSERT INTO guestusers () VALUES ()";
+    if ($conn->query($sql) === TRUE) {
+        $sql_select = "SELECT guestuserid FROM guestusers ORDER BY timestamp_column DESC LIMIT 1";
+        $result = $conn->query($sql_select);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $guestuserid = $row['guestuserid'];
+            $_SESSION['guestuserid'] = $guestuserid;
+            $_SESSION['data_inserted'] = true;
+        }
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $prefix = $_POST['prefix'];
+    $firstName = $_POST['first_name'];
+    $lastName = $_POST['last_name'];
+    $suffix = $_POST['suffix'];
+    $mobileNumber = $_POST['mobile_number'];
+    $emailAddress = $_POST['email_address'];
+    $country = $_POST['country'];
+    $address = $_POST['address'];
+    $city = $_POST['city'];
+    $zip = $_POST['zip'];
+
+    $sql = "INSERT INTO guestdetails (guestuserid, prefix, firstname, lastname, suffix, mobilenumber, emailaddress, country, address, city, zipcode) 
+            VALUES ('" . $_SESSION['guestuserid'] . "', '$prefix', '$firstName', '$lastName', '$suffix', '$mobileNumber', '$emailAddress', '$country', '$address', '$city', '$zip')";
+
+    if ($conn->query($sql) === TRUE) {
+        header("Location: book-review.php");
+        exit();
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+?>

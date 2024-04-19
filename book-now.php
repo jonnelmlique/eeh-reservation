@@ -148,51 +148,52 @@ if (!isset($_SESSION['data_inserted'])) {
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                             ?>
-                    <div class="border border-primary w-100 p-2" style="border-radius: 12px">
+                            <div class="border border-primary w-100 p-2" style="border-radius: 12px">
 
-                        <div class="row">
-                            <div class="col-5">
-                                <img src="./rooms/<?php echo $row["image"]; ?>" alt="Rooms Image" class="w-100"
-                                    style="border-radius: 8px" />
+                                <div class="row">
+                                    <div class="col-5">
+                                        <img src="./rooms/<?php echo $row["image"]; ?>" alt="Rooms Image" class="w-100"
+                                            style="border-radius: 8px" />
 
+                                    </div>
+
+                                    <div class="col-4">
+                                        <h4 class="fw-bold mt-2"><?php echo $row['roomtype']; ?></h4>
+                                        <p>
+                                            <i class="lni lni-home"></i> Beds: <?php echo $row['bedsavailable']; ?><br />
+                                            <i class="lni lni-layers"></i> Included:
+                                            <?php echo $row['roominclusion']; ?><br />
+                                            <i class="lni lni-coin"></i> Deposit: <?php echo $row['deposit']; ?><br />
+                                            <i class="lni lni-user"></i> Ocuppancy: <?php echo $row['maxoccupancy']; ?>
+
+                                        </p>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <h4 class="fw-bold mt-2">
+                                            ₱<?php echo number_format($row['price'], 2, '.', ','); ?></h4>
+                                        <small>Per Night</small> <br><br />
+                                        <h8 class="fw-bold mt-2">
+                                            ₱<?php echo number_format($row['reservationprice'], 2, '.', ','); ?>
+                                        </h8><br />Reservation
+
+                                        <br /><br />
+
+                                        <button class="btn btn-primary w-100 reserve-btn" style="border-radius: 8px"
+                                            data-roomid="<?php echo $row['roomid']; ?>"
+                                            data-roomtype="<?php echo $row['roomtype']; ?>"
+                                            data-maxoccupancy="<?php echo $row['maxoccupancy']; ?>"
+                                            data-price="<?php echo $row['price']; ?>"
+                                            data-reservationprice="<?php echo $row['reservationprice']; ?>"
+                                            data-bs-toggle="modal" data-bs-target="#reserveModal">
+                                            Reserve Now
+                                        </button>
+
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="col-4">
-                                <h4 class="fw-bold mt-2"><?php echo $row['roomname']; ?></h4>
-                                <h6 class="fw-bold mt-2"><?php echo $row['roomtype']; ?></h6>
-                                <p>
-                                    <i class="lni lni-home"></i> Beds: <?php echo $row['bedsavailable']; ?><br />
-                                    <i class="lni lni-juice"></i> Included:
-                                    <?php echo $row['roominclusion']; ?><br />
-                                    <i class="lni lni-coin"></i> Deposit: <?php echo $row['deposit']; ?>
-                                </p>
-                            </div>
-
-                            <div class="col-3">
-                                <h4 class="fw-bold mt-2">
-                                    ₱<?php echo number_format($row['price'], 2, '.', ','); ?></h4>
-                                <small>Per Night</small> <br><br />
-                                <h8 class="fw-bold mt-2">
-                                    ₱<?php echo number_format($row['reservationprice'], 2, '.', ','); ?>
-                                </h8><br />Reservation
-
-                                <br /><br />
-
-                                <button class="btn btn-primary w-100 reserve-btn" style="border-radius: 8px"
-                                    data-roomid="<?php echo $row['roomid']; ?>"
-                                    data-roomname="<?php echo $row['roomname']; ?>"
-                                    data-roomtype="<?php echo $row['roomtype']; ?>"
-                                    data-price="<?php echo $row['price']; ?>"
-                                    data-reservationprice="<?php echo $row['reservationprice']; ?>"
-                                    data-bs-toggle="modal" data-bs-target="#reserveModal">
-                                    Reserve Now
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <br />
-                    <?php
+                            <br />
+                            <?php
                         }
                     } else {
                         echo "No rooms available.";
@@ -204,8 +205,8 @@ if (!isset($_SESSION['data_inserted'])) {
                 if (isset($_SESSION['guestuserid'])) {
                     $guestuserid = $_SESSION['guestuserid'];
 
-                    $sql = "SELECT bc.*, r.roomname 
-            FROM reservationsum bc 
+                    $sql = "SELECT bc.*, r.roomtype 
+            FROM reservationsummary bc 
             INNER JOIN room r ON bc.roomid = r.roomid 
             WHERE bc.guestuserid = '$guestuserid'";
                     $result = $conn->query($sql);
@@ -225,7 +226,10 @@ if (!isset($_SESSION['data_inserted'])) {
                             $checkoutDate = $row['checkoutdate'];
                             $checkoutTime = date("h:i A", strtotime($row['checkouttime']));
                             $checkoutDay = date("l", strtotime($checkoutDate));
-                            $roomName = $row['roomname'];
+                            $roomtype = $row['roomtype'];
+                            $roomfloor = $row['roomfloor'];
+                            $roomnumber = $row['roomnumber'];
+
                             $reservationPrice = $row['reservationprice'];
                             $totalReservationPrice += $reservationPrice;
                             echo "<div class='row mx-2 pt-2'>
@@ -238,15 +242,25 @@ if (!isset($_SESSION['data_inserted'])) {
                         <small>$checkoutDay, $checkoutDate $checkoutTime</small>
                     </div>
                 </div>
-           
+                <div class='row pt-4' align='center'>
+                <div class='col-6'>
+                <label>Room Floor:</label>
+                    <small class='text-primary'>$roomfloor</small>
+                </div>
+                <div class='col-6'>
+                <label>Room Number:</label>
+                <small class='text-primary'>$roomnumber</small>
+                </div>
+            </div>
                 <div class='row pt-4' align='center'>
                     <div class='col-6'>
-                        <small class='text-primary'>$roomName</small>
+                        <small class='text-primary'>$roomtype</small>
                     </div>
                     <div class='col-6'>
                     <small>₱" . number_format($reservationPrice, 2) . "</small>
                     </div>
                 </div>
+               
                 <div align='center'>
                     <div class='row w-75 pt-4'>
                         <div class='col-6'>
@@ -285,83 +299,105 @@ if (!isset($_SESSION['data_inserted'])) {
     <br /><br />
 </div>
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+    <!-- <div class="modal-dialog modal-xl"> -->
     <div class="modal-dialog modal-dialog-centered">
+
         <div class="modal-content" style="background-color: #FAEBD7">
             <div class="modal-header">
                 <h5 class="modal-title fw-bold">Add Reservation</h5>
             </div>
 
-            <div class="modal-body" align="center">
-                <div id="roomDetails"></div>
+            <div class="modal-body">
+                <div class="roomdetails" id="roomDetails"></div>
                 <form id="reservationForm" action="process_reservation.php" method="post">
                     <input type="hidden" name="price" id="price" value="">
                     <input type="hidden" name="reservationprice" id="reservationprice" value="">
+                    <div class="input">
 
-                    <div class="row">
-
-                        <div class="col-4" align="right">
-                            <p class="mt-2">Adults:</p>
+                        <div class="row">
+                            <div class="col-4" align="right">
+                                <p class="mt-2">Adults:</p>
+                            </div>
+                            <div class="col-8">
+                                <input type="number" class="form-control" name="add-adults" style="border-radius: 8px"
+                                    placeholder="Adults" required />
+                            </div>
                         </div>
-                        <div class="col-8"><input type="number" class="form-control" name="add-adults"
-                                style="border-radius: 8px" placeholder="Adults" required /></div>
+                        <div class="row">
+
+                            <div class="col-4" align="right">
+                                <p class="mt-2">Children:</p>
+                            </div>
+                            <div class="col-8"><input type="number" class="form-control" name="add-children"
+                                    style="border-radius: 8px" placeholder="Children" required /></div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="col-4" align="right">
+                                <label class="mt-2">Check-in Date:</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="date" class="form-control" id="checkInDate" name="checkInDate"
+                                    style="border-radius: 8px" required />
+
+                            </div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="col-4" align="right">
+                                <label class="mt-2">Check-in Time:</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="time" class="form-control mt-1" id="checkInTime" name="checkInTime"
+                                    style="border-radius: 8px" required />
+                            </div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="col-4" align="right">
+                                <label class="mt-2">Check-out Date:</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="date" class="form-control" id="checkOutDate" name="checkOutDate"
+                                    style="border-radius: 8px" required />
+
+                            </div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="col-4" align="right">
+                                <label class="mt-2">Check-out Time:</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="time" class="form-control mt-1" id="checkOutTime" name="checkOutTime"
+                                    style="border-radius: 8px" required />
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <label for="floorSelect" class="col-4 col-form-label text-end">Room Floor:</label>
+                            <div class="col-8">
+                                <select class="form-select mt-1" id="floorSelect" name="floorSelect"
+                                    style="border-radius: 8px">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <label for="roomNumberSelect" class="col-4 col-form-label text-end">Room Number:</label>
+                            <div class="col-8">
+                                <select class="form-select mt-1" id="roomNumberSelect" name="roomNumberSelect"
+                                    style="border-radius: 8px">
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row">
 
-                        <div class="col-4" align="right">
-                            <p class="mt-2">Children:</p>
-                        </div>
-                        <div class="col-8"><input type="number" class="form-control" name="add-children"
-                                style="border-radius: 8px" placeholder="Children" required /></div>
-                    </div>
-
-                    <div class="row mt-1">
-                        <div class="col-4" align="right">
-                            <label class="mt-2">Check-in Date:</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="date" class="form-control" id="checkInDate" name="checkInDate"
-                                style="border-radius: 8px" required />
-
-                        </div>
-                    </div>
-
-                    <div class="row mt-1">
-                        <div class="col-4" align="right">
-                            <label class="mt-2">Check-in Time:</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="time" class="form-control mt-1" id="checkInTime" name="checkInTime"
-                                style="border-radius: 8px" required />
-                        </div>
-                    </div>
-
-                    <div class="row mt-1">
-                        <div class="col-4" align="right">
-                            <label class="mt-2">Check-out Date:</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="date" class="form-control" id="checkOutDate" name="checkOutDate"
-                                style="border-radius: 8px" required />
-
-                        </div>
-                    </div>
-
-                    <div class="row mt-1">
-                        <div class="col-4" align="right">
-                            <label class="mt-2">Check-out Time:</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="time" class="form-control mt-1" id="checkOutTime" name="checkOutTime"
-                                style="border-radius: 8px" required />
-                        </div>
-                    </div>
 
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn continue-btn">Reserve</button>
             </div>
+
             </form>
         </div>
     </div>
@@ -372,77 +408,129 @@ if (!isset($_SESSION['data_inserted'])) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-$('.reserve-btn').click(function() {
-    var roomid = $(this).data('roomid');
-    var roomName = $(this).data('roomname');
-    var roomType = $(this).data('roomtype');
-    var price = $(this).data('price');
-    var reservationPrice = $(this).data('reservationprice');
+    $('.reserve-btn').click(function () {
+        var roomid = $(this).data('roomid');
+        var roomType = $(this).data('roomtype');
+        var maxoccupancy = $(this).data('maxoccupancy');
 
-    $('#roomDetails').html(`
-            <h4>Room Details</h4>
-            <p>Room Name: ${roomName}</p>
-            <p>Room Type: ${roomType}</p>
-            <p>Reservation Price: ${reservationPrice}</p>
-        `);
+        var price = $(this).data('price');
+        var reservationPrice = $(this).data('reservationprice');
 
-    $('#reservationForm').append(`<input type="hidden" name="roomid" value="${roomid}" />`);
-    $('#reservationForm').append(`<input type="hidden" name="price" value="${price}" />`);
-    $('#reservationForm').append(`<input type="hidden" name="reservationprice" value="${reservationPrice}" />`);
+        $('#roomDetails').html(`
+        <h5 class="detailstitle">Room Details</h5>
+        <p>Room Type: ${roomType}</p> 
+        <p>Max Occupancy: ${maxoccupancy}</p>
 
-    $('#reserveModal').modal('show');
-});
+        <p>Reservation Price: ${reservationPrice}</p>
+    `);
 
-$('#reservationForm').submit(function(e) {
-    e.preventDefault();
+        $('#reservationForm').append(`<input type="hidden" name="roomid" value="${roomid}" />`);
+        $('#reservationForm').append(`<input type="hidden" name="price" value="${price}" />`);
+        $('#reservationForm').append(
+            `<input type="hidden" name="reservationprice" value="${reservationPrice}" />`);
 
-    $.ajax({
-        url: $(this).attr('action'),
-        method: 'POST',
-        data: $(this).serialize(),
-        success: function(response) {
-            Swal.fire({
-                title: 'Reservation Successful!',
-                text: 'Your reservation has been successfully Added.',
-                icon: 'success',
-                showCancelButton: false,
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    location.reload();
+        $('#reserveModal').modal('show');
+    });
+
+
+    $('#reservationForm').submit(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function (response) {
+                Swal.fire({
+                    title: 'Reservation Successful!',
+                    text: 'Your reservation has been successfully Added.',
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred while processing the reservation. Please try again later.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.reserve-btn').click(function () {
+            var roomtype = $(this).data('roomtype');
+            $.ajax({
+                url: 'get_room_info.php',
+                method: 'POST',
+                data: {
+                    roomtype: roomtype
+                },
+                dataType: 'json',
+                success: function (response) {
+                    var floors = response.floors;
+                    var roomNumbers = response.roomNumbers;
+
+                    $('#floorSelect').empty();
+                    $('#roomNumberSelect').empty();
+
+                    $.each(floors, function (index, floor) {
+                        $('#floorSelect').append($('<option>', {
+                            value: floor,
+                            text: '' + floor
+                        }));
+                    });
+
+                    $.each(roomNumbers, function (index, room) {
+                        var roomNumber = room.roomnumber;
+                        var status = room.status;
+
+                        var $option = $('<option>', {
+                            value: roomNumber,
+                            text: roomNumber
+                        });
+
+                        if (status === 'Reserved') {
+                            $option.prop('disabled', true);
+                        }
+
+                        $('#roomNumberSelect').append($option);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
                 }
             });
-        },
-        error: function(xhr, status, error) {
-            Swal.fire({
-                title: 'Error',
-                text: 'An error occurred while processing the reservation. Please try again later.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        }
+        });
     });
-});
-</script>
-
-<script src="scripts/bootstrap.bundle.min.js"></script>
-<script>
-document.getElementById('checkInDate').addEventListener('change', function() {
-    var checkInDate = new Date(this.value);
-    var checkOutDateInput = document.getElementById('checkOutDate');
-    var checkOutDate = new Date(checkOutDateInput.value);
-
-    if (checkInDate > checkOutDate) {
-        checkOutDateInput.value = this.value;
-    }
-    checkOutDateInput.min = this.value;
-});
 </script>
 <script>
-var currentDate = new Date().toISOString().split('T')[0];
-document.getElementById('checkInDate').setAttribute('min', currentDate);
-document.getElementById('checkOutDate').setAttribute('min', currentDate);
+    document.getElementById('checkInDate').addEventListener('change', function () {
+        var checkInDate = new Date(this.value);
+        var checkOutDateInput = document.getElementById('checkOutDate');
+        var checkOutDate = new Date(checkOutDateInput.value);
+
+        if (checkInDate > checkOutDate) {
+            checkOutDateInput.value = this.value;
+        }
+        checkOutDateInput.min = this.value;
+    });
 </script>
+<script>
+    var currentDate = new Date().toISOString().split('T')[0];
+    document.getElementById('checkInDate').setAttribute('min', currentDate);
+    document.getElementById('checkOutDate').setAttribute('min', currentDate);
+</script>
+
 
 <?php include ("components/footer.php"); ?>
 </body>

@@ -51,8 +51,8 @@ if (!isset($_SESSION['data_inserted'])) {
                         if (isset($_SESSION['guestuserid'])) {
                             $guestuserid = $_SESSION['guestuserid'];
 
-                            $sql = "SELECT bc.*, r.roomname 
-                FROM reservationsum bc 
+                            $sql = "SELECT bc.*, r.roomtype 
+                FROM reservationsummary bc 
                 INNER JOIN room r ON bc.roomid = r.roomid 
                 WHERE bc.guestuserid = '$guestuserid'";
                             $result = $conn->query($sql);
@@ -66,12 +66,12 @@ if (!isset($_SESSION['data_inserted'])) {
                                     $checkinTime = date("h:i A", strtotime($row['checkintime']));
                                     $checkoutDate = $row['checkoutdate'];
                                     $checkoutTime = date("h:i A", strtotime($row['checkouttime']));
-                                    $roomName = $row['roomname'];
+                                    $roomtype = $row['roomtype'];
                                     $roomId = $row['roomid'];
                                     $reservationPrice = $row['reservationprice'];
                                     $totalReservationPrice += $reservationPrice;
 
-                                    echo "<p><strong>Room Name:</strong> $roomName</p>";
+                                    echo "<p><strong>Room Type:</strong> $roomtype</p>";
                                     echo "<p><strong>Check-in:</strong> $checkinDate $checkinTime</p>";
                                     echo "<p><strong>Check-out:</strong> $checkoutDate $checkoutTime</p>";
                                     echo "<p><strong>Reservation Price:</strong> ₱" . number_format($reservationPrice, 2) . "</p>";
@@ -95,7 +95,7 @@ if (!isset($_SESSION['data_inserted'])) {
                         if (isset($_SESSION['guestuserid'])) {
                             $guestuserid = $_SESSION['guestuserid'];
 
-                            $sql = "SELECT * FROM guestdetails WHERE guestuserid = '$guestuserid'";
+                            $sql = "SELECT * FROM guestdetails WHERE guestuserid = '$guestuserid' ORDER BY guestid DESC LIMIT 1";
                             $result = $conn->query($sql);
 
                             if ($result->num_rows > 0) {
@@ -103,16 +103,15 @@ if (!isset($_SESSION['data_inserted'])) {
                                 echo "<table class='table'>";
                                 echo "<thead><tr><th></th><th></th></tr></thead>";
                                 echo "<tbody>";
-                                while ($row = $result->fetch_assoc()) {
-                                    $namePrefix = $row['prefix'] . ' ' . $row['firstname'] . ' ' . $row['lastname'] . ' ' . $row['suffix'];
-                                    echo "<tr><td>Name:</td><td>" . $namePrefix . "</td></tr>";
-                                    echo "<tr><td>Mobile Number</td><td>" . $row['mobilenumber'] . "</td></tr>";
-                                    echo "<tr><td>Email Address</td><td>" . $row['emailaddress'] . "</td></tr>";
-                                    echo "<tr><td>Country</td><td>" . $row['country'] . "</td></tr>";
-                                    echo "<tr><td>Address</td><td>" . $row['address'] . "</td></tr>";
-                                    echo "<tr><td>City</td><td>" . $row['city'] . "</td></tr>";
-                                    echo "<tr><td>Zip Code</td><td>" . $row['zipcode'] . "</td></tr>";
-                                }
+                                $row = $result->fetch_assoc(); // Fetch only one row
+                                $namePrefix = $row['prefix'] . ' ' . $row['firstname'] . ' ' . $row['lastname'] . ' ' . $row['suffix'];
+                                echo "<tr><td>Name:</td><td>" . $namePrefix . "</td></tr>";
+                                echo "<tr><td>Mobile Number</td><td>" . $row['mobilenumber'] . "</td></tr>";
+                                echo "<tr><td>Email Address</td><td>" . $row['emailaddress'] . "</td></tr>";
+                                echo "<tr><td>Country</td><td>" . $row['country'] . "</td></tr>";
+                                echo "<tr><td>Address</td><td>" . $row['address'] . "</td></tr>";
+                                echo "<tr><td>City</td><td>" . $row['city'] . "</td></tr>";
+                                echo "<tr><td>Zip Code</td><td>" . $row['zipcode'] . "</td></tr>";
                                 echo "</tbody>";
                                 echo "</table>";
                             } else {
@@ -121,6 +120,8 @@ if (!isset($_SESSION['data_inserted'])) {
                         } else {
                             echo "<p>Guest user ID not found in session.</p>";
                         }
+
+
                         ?>
 
                         <br />
@@ -149,8 +150,8 @@ if (!isset($_SESSION['data_inserted'])) {
                         if (isset($_SESSION['guestuserid'])) {
                             $guestuserid = $_SESSION['guestuserid'];
 
-                            $sql = "SELECT bc.*, r.roomname 
-                        FROM reservationsum bc 
+                            $sql = "SELECT bc.*, r.roomtype 
+                        FROM reservationsummary bc 
                         INNER JOIN room r ON bc.roomid = r.roomid 
                         WHERE bc.guestuserid = '$guestuserid'";
                             $result = $conn->query($sql);
@@ -166,7 +167,9 @@ if (!isset($_SESSION['data_inserted'])) {
                                     $checkoutDate = $row['checkoutdate'];
                                     $checkoutTime = date("h:i A", strtotime($row['checkouttime']));
                                     $checkoutDay = date("l", strtotime($checkoutDate));
-                                    $roomName = $row['roomname'];
+                                    $roomtype = $row['roomtype'];
+                                    $roomfloor = $row['roomfloor'];
+                                    $roomnumber = $row['roomnumber'];
                                     $reservationPrice = $row['reservationprice'];
                                     $totalReservationPrice += $reservationPrice;
 
@@ -181,8 +184,18 @@ if (!isset($_SESSION['data_inserted'])) {
                                 </div>
                             </div>
                             <div class='row pt-4' align='center'>
+                            <div class='col-6'>
+                            <label>Room Floor:</label>
+                                <small class='text-primary'>$roomfloor</small>
+                            </div>
+                            <div class='col-6'>
+                            <label>Room Number:</label>
+                            <small class='text-primary'>$roomnumber</small>
+                            </div>
+                        </div>  
+                            <div class='row pt-4' align='center'>
                                 <div class='col-6'>
-                                    <small class='text-primary'>$roomName</small>
+                                    <small class='text-primary'>$roomtype</small>
                                 </div>
                                 <div class='col-6'>
                                     <small>₱" . number_format($reservationPrice, 2) . "</small>

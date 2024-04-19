@@ -22,7 +22,6 @@ if (
     $totalreservationprice = mysqli_real_escape_string($conn, $_POST['totalreservationprice']);
     $paymentMethod = mysqli_real_escape_string($conn, $_POST['paymentMethod']); // Extracting payment method
 
-    // Retrieve prefix and firstname from guestdetails table
     $sql_guest = "SELECT prefix, firstname, lastname, suffix, mobilenumber, emailaddress, country, address, city, zipcode FROM guestdetails WHERE guestuserid = '$guestuserid'";
     $result_guest = mysqli_query($conn, $sql_guest);
     $row_guest = mysqli_fetch_assoc($result_guest);

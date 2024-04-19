@@ -17,7 +17,7 @@ if (!isset($_SESSION['data_inserted'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
+
     $prefix = $_POST['prefix'];
     $firstName = $_POST['first_name'];
     $lastName = $_POST['last_name'];
@@ -29,12 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $city = $_POST['city'];
     $zip = $_POST['zip'];
 
-    // Insert guest details into the database
     $sql = "INSERT INTO guestdetails (guestuserid, prefix, firstname, lastname, suffix, mobilenumber, emailaddress, country, address, city, zipcode) 
             VALUES ('" . $_SESSION['guestuserid'] . "', '$prefix', '$firstName', '$lastName', '$suffix', '$mobileNumber', '$emailAddress', '$country', '$address', '$city', '$zip')";
 
     if ($conn->query($sql) === TRUE) {
-        // Redirect to book-review.php after successful insertion
         header("Location: book-review.php");
         exit();
     } else {
@@ -76,29 +74,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <form method="post" class="needsvalidation">
                             <div class="row">
                                 <div class="col-3">
-                                    <input type="text" class="form-control" name="prefix" placeholder="Prefix" />
+                                    <input type="text" class="form-control" name="prefix" placeholder="Prefix"
+                                        value="<?php echo isset($_SESSION['guest_details']['prefix']) ? $_SESSION['guest_details']['prefix'] : ''; ?>" />
                                 </div>
                                 <div class="col-3">
                                     <input type="text" class="form-control" name="first_name" placeholder="First Name"
+                                        value="<?php echo isset($_SESSION['guest_details']['firstname']) ? $_SESSION['guest_details']['firstname'] : ''; ?>"
                                         required />
+
+
                                 </div>
                                 <div class="col-3">
                                     <input type="text" class="form-control" name="last_name" placeholder="Last Name"
+                                        value="<?php echo isset($_SESSION['guest_details']['lastname']) ? $_SESSION['guest_details']['lastname'] : ''; ?>"
                                         required />
+
+
                                 </div>
                                 <div class="col-3">
-                                    <input type="text" class="form-control" name="suffix" placeholder="Suffix" />
+                                    <input type="text" class="form-control" name="suffix" placeholder="Suffix"
+                                        value="<?php echo isset($_SESSION['guest_details']['suffix']) ? $_SESSION['guest_details']['suffix'] : ''; ?>" />
+
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col-6">
                                     <input type="number" class="form-control" name="mobile_number"
-                                        placeholder="Mobile Number" required />
+                                        placeholder="Mobile Number"
+                                        value="<?php echo isset($_SESSION['guest_details']['mobilenumber']) ? $_SESSION['guest_details']['mobilenumber'] : ''; ?>"
+                                        required />
+
+
                                 </div>
                                 <div class="col-6">
                                     <input type="email" class="form-control" name="email_address"
-                                        placeholder="Email Address" required />
+                                        placeholder="Email Address"
+                                        value="<?php echo isset($_SESSION['guest_details']['emailaddress']) ? $_SESSION['guest_details']['emailaddress'] : ''; ?>"
+                                        required />
+
+
                                 </div>
                             </div>
                             <br /><br />
@@ -107,21 +122,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="row">
                                 <div class="col-4">
                                     <input type="text" class="form-control" name="country" placeholder="Country"
+                                        value="<?php echo isset($_SESSION['guest_details']['country']) ? $_SESSION['guest_details']['country'] : ''; ?>"
                                         required />
+
+
                                 </div>
                                 <div class="col-8">
                                     <input type="text" class="form-control" name="address" placeholder="Address"
+                                        value="<?php echo isset($_SESSION['guest_details']['address']) ? $_SESSION['guest_details']['address'] : ''; ?>"
                                         required />
+
+
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col-8">
-                                    <input type="text" class="form-control" name="city" placeholder="City" required />
+                                    <input type="text" class="form-control" name="city" placeholder="City"
+                                        value="<?php echo isset($_SESSION['guest_details']['city']) ? $_SESSION['guest_details']['city'] : ''; ?>"
+                                        required />
+
                                 </div>
                                 <div class="col-4">
                                     <input type="number" class="form-control" name="zip" placeholder="Zip Postal Code"
+                                        value="<?php echo isset($_SESSION['guest_details']['zipcode']) ? $_SESSION['guest_details']['zipcode'] : ''; ?>"
                                         required />
+
+
                                 </div>
                             </div>
 
@@ -135,19 +162,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (isset($_SESSION['guestuserid'])) {
                     $guestuserid = $_SESSION['guestuserid'];
 
-                    $sql = "SELECT bc.*, r.roomname 
-                                FROM reservationsum bc 
-                                INNER JOIN room r ON bc.roomid = r.roomid 
-                                WHERE bc.guestuserid = '$guestuserid'";
+                    $sql = "SELECT bc.*, r.roomtype 
+            FROM reservationsummary bc 
+            INNER JOIN room r ON bc.roomid = r.roomid 
+            WHERE bc.guestuserid = '$guestuserid'";
                     $result = $conn->query($sql);
                     $totalReservationPrice = 0;
 
                     echo "<div class='col-4'>
-                                <div class='p-2 w-100 border border-primary border-2' style='border-radius: 8px'>
-                                    <h4 class='fw-bold text-uppercase mt-2' align='center'>Your Booking Summary</h4>
-                                    <hr class='mt-2 mx-3' />";
+            <div class='p-2 w-100 border border-primary border-2' style='border-radius: 8px'>
+                <h4 class='fw-bold text-uppercase mt-2' align='center'>Your Booking Summary</h4>
+                <hr class='mt-2 mx-3' />";
 
                     if ($result->num_rows > 0) {
+
                         while ($row = $result->fetch_assoc()) {
                             $checkinDate = $row['checkindate'];
                             $checkinTime = date("h:i A", strtotime($row['checkintime']));
@@ -155,47 +183,72 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $checkoutDate = $row['checkoutdate'];
                             $checkoutTime = date("h:i A", strtotime($row['checkouttime']));
                             $checkoutDay = date("l", strtotime($checkoutDate));
-                            $roomName = $row['roomname'];
+                            $roomtype = $row['roomtype'];
+                            $roomfloor = $row['roomfloor'];
+                            $roomnumber = $row['roomnumber'];
+
                             $reservationPrice = $row['reservationprice'];
                             $totalReservationPrice += $reservationPrice;
-
                             echo "<div class='row mx-2 pt-2'>
-                                        <div class='col-6' align='center'>
-                                            <b class='text-uppercase'>Check-in</b><br />
-                                            <small>$checkinDay, $checkinDate $checkinTime</small>
-                                        </div>
-                                        <div class='col-6' align='center'>
-                                            <b class='text-uppercase'>Check-out</b><br />
-                                            <small>$checkoutDay, $checkoutDate $checkoutTime</small>
-                                        </div>
-                                    </div>
-                                    <div class='row pt-4' align='center'>
-                                        <div class='col-6'>
-                                            <small class='text-primary'>$roomName</small>
-                                        </div>
-                                        <div class='col-6'>
-                                            <small>₱" . number_format($reservationPrice, 2) . "</small>
-                                        </div>
-                                    </div>
-                                    <div align='center'>
-                                        <div class='row w-75 pt-4'>
-                                        </div>
-                                        <hr class='mt-2 mx-3' />";
+                    <div class='col-6' align='center'>
+                        <b class='text-uppercase'>Check-in</b><br />
+                        <small>$checkinDay, $checkinDate $checkinTime</small>
+                    </div>
+                    <div class='col-6' align='center'>
+                        <b class='text-uppercase'>Check-out</b><br />
+                        <small>$checkoutDay, $checkoutDate $checkoutTime</small>
+                    </div>
+                </div>
+                <div class='row pt-4' align='center'>
+                <div class='col-6'>
+                <label>Room Floor:</label>
+                    <small class='text-primary'>$roomfloor</small>
+                </div>
+                <div class='col-6'>
+                <label>Room Number:</label>
+                <small class='text-primary'>$roomnumber</small>
+                </div>
+            </div>
+                <div class='row pt-4' align='center'>
+                    <div class='col-6'>
+                        <small class='text-primary'>$roomtype</small>
+                    </div>
+                    <div class='col-6'>
+                    <small>₱" . number_format($reservationPrice, 2) . "</small>
+                    </div>
+                </div>
+               
+                <div align='center'>
+                    <div class='row w-75 pt-4'>
+                        <div class='col-6'>
+                            <small><i class='lni lni-pencil-alt'></i> Edit</small>
+                        </div>
+                        <div class='col-6'>
+                            <small><i class='lni lni-trash-can'></i> Remove</small>
+                        </div>
+                    </div>
+                <hr class='mt-2 mx-3' />";
                         }
                         echo "<div class='row mx-2 pt-2'>
-                                    <div class='col-6'><b>Total</b></div>
-                                    <div class='col-6' align='right'>₱" . number_format($totalReservationPrice, 2) . "</div>
-                                </div>";
+                        <div class='col-6'><b>Total</b></div>
+                        <div class='col-6' align='right'>₱" . number_format($totalReservationPrice, 2) . "</div>
+                      </div>";
 
-                        echo "</div></div></div>";
+                        echo "</div></div>";
+
+                        echo "<a href='book-review.php' class='btn continue-btn w-100 text-uppercase' style='border-radius: 8px; margin-top: 15px;'>Continue to Book</a>";
+
                         echo "</div>";
                     } else {
                         echo "<div align='center'>No bookings found.</div>";
                     }
+
+
                 } else {
                     echo "Guest user ID not found in session.";
                 }
                 ?>
+
             </div>
         </div>
     </div>

@@ -2,16 +2,13 @@
 include '../src/config/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $roomnumber = $_POST["add-room-number"];
-    $roomname = $_POST["add-room-name"];
+    $roomtype = $_POST["add-room-type"];
     $roominclusion = $_POST["add-room-inc"];
     $bedsavailable = $_POST["add-room-beds"];
+    $maxoccupancy = $_POST["add-room-maxoccupancy"];
     $deposit = $_POST["add-room-deposit"];
-
-    $roomtype = $_POST["add-room-type"];
     $price = $_POST["add-price"];
     $reservationprice = $_POST["add-rprice"];
-
     $status = $_POST["add-status"];
 
     if (!empty($_FILES["add-image"]["name"])) {
@@ -32,26 +29,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             } else {
                 $message = "Only JPG, JPEG, PNG, GIF files are allowed.";
-                exit(); 
+                exit();
             }
         } else {
             $message = "File is not an image.";
-            exit(); 
+            exit();
         }
     } else {
         $image = "";
     }
 
-    $checkRoomNumberQuery = "SELECT * FROM room WHERE roomnumber = '$roomnumber'";
+    $checkRoomNumberQuery = "SELECT * FROM room WHERE roomtype = '$roomtype'";
     $checkRoomNumberResult = $conn->query($checkRoomNumberQuery);
     if ($checkRoomNumberResult->num_rows > 0) {
-        $message = "Room number already exists.";
+        $message = "Room Type already exists.";
         echo json_encode(array("message" => $message));
         exit();
     }
 
-    $sql = "INSERT INTO room (roomnumber, roomname, roominclusion, bedsavailable, deposit, roomtype, price, reservationprice,  status, image) 
-            VALUES ('$roomnumber', '$roomname', '$roominclusion', '$bedsavailable', '$deposit', '$roomtype', '$price',  '$reservationprice', '$status', '$image')";
+    $sql = "INSERT INTO room (roomtype, roominclusion, bedsavailable, maxoccupancy, deposit, price, reservationprice,  status, image) 
+            VALUES ('$roomtype', '$roominclusion', '$bedsavailable', '$maxoccupancy', '$deposit', '$price',  '$reservationprice', '$status', '$image')";
 
     if ($conn->query($sql) === TRUE) {
         $message = "success";
