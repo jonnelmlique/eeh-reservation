@@ -7,7 +7,7 @@ if (isset($_SESSION['guestuserid'])) {
 
     include './src/config/config.php';
 
-    $sql = "SELECT roomid, adults, children, checkindate, checkintime, checkoutdate, checkouttime, price, reservationprice FROM reservationsum WHERE guestuserid = ?";
+    $sql = "SELECT roomid, roomfloor, roomnumber, adults, children, checkindate, checkintime, checkoutdate, checkouttime, price, reservationprice FROM reservationsummary WHERE guestuserid = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $guestuserid);
     $stmt->execute();

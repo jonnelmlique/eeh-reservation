@@ -36,11 +36,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: book-review.php");
         exit();
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        $message = "Error: " . $conn->error;
     }
 }
 ?>
+<?php
 
+if (isset($_SESSION['guestuserid'])) {
+    $guestuserid = $_SESSION['guestuserid'];
+
+    $sql_check_cart = "SELECT * FROM reservationsummary WHERE guestuserid = '$guestuserid'";
+    $result_check_cart = $conn->query($sql_check_cart);
+
+    if ($result_check_cart->num_rows == 0) {
+        header("Location: book-now.php");
+        exit();
+    }
+}
+?>
 <!DOCTYPE html>
 
 <head>
@@ -152,11 +165,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn continue-btn w-100 text-uppercase"
-                                style="border-radius: 8px; margin-top: 15px;">Continue to Book</button>
-                        </form>
                     </div>
+                    <button type="submit" class="btn continue-btn w-100 text-uppercase"
+                        style="border-radius: 8px; margin-top: 15px;">Continue to Book</button>
+                    </form>
                 </div>
+
 
                 <?php
                 if (isset($_SESSION['guestuserid'])) {
@@ -218,15 +232,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
                
-                <div align='center'>
-                    <div class='row w-75 pt-4'>
-                        <div class='col-6'>
-                            <small><i class='lni lni-pencil-alt'></i> Edit</small>
-                        </div>
-                        <div class='col-6'>
-                            <small><i class='lni lni-trash-can'></i> Remove</small>
-                        </div>
-                    </div>
                 <hr class='mt-2 mx-3' />";
                         }
                         echo "<div class='row mx-2 pt-2'>
@@ -236,7 +241,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         echo "</div></div>";
 
-                        echo "<a href='book-review.php' class='btn continue-btn w-100 text-uppercase' style='border-radius: 8px; margin-top: 15px;'>Continue to Book</a>";
 
                         echo "</div>";
                     } else {
@@ -258,8 +262,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <script src="scripts/jquery.min.js"></script>
 <script src="scripts/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <?php include ("components/footer.php"); ?>
+<?php
+if (!empty($message)) {
+    echo "<script>
+            Swal.fire({
+                title: 'Error',
+                text: '" . $message . "',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        </script>";
+}
+?>
 </body>
 
 </html>

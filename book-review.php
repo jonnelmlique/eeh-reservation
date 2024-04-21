@@ -19,6 +19,20 @@ if (!isset($_SESSION['data_inserted'])) {
 }
 
 ?>
+<?php
+
+if (isset($_SESSION['guestuserid'])) {
+    $guestuserid = $_SESSION['guestuserid'];
+
+    $sql_check_cart = "SELECT * FROM reservationsummary WHERE guestuserid = '$guestuserid'";
+    $result_check_cart = $conn->query($sql_check_cart);
+
+    if ($result_check_cart->num_rows == 0) {
+        header("Location: book-now.php");
+        exit();
+    }
+}
+?>
 <!DOCTYPE html>
 
 <head>
@@ -288,6 +302,8 @@ document.getElementById("proceedButton").addEventListener("click", function() {
                             var bookingCartData = JSON.parse(xhrBookingCart
                                 .responseText);
                             var roomids = [];
+                            var roomfloor = [];
+                            var roomnumber = [];
                             var adults = [];
                             var children = [];
                             var checkindates = [];
@@ -297,11 +313,13 @@ document.getElementById("proceedButton").addEventListener("click", function() {
                             var prices = [];
                             var reservationprices = [];
                             var totalreservationprice =
-                                '<?php echo $totalReservationPrice; ?>'; // Add this line
+                                '<?php echo $totalReservationPrice; ?>';
 
 
                             for (var i = 0; i < bookingCartData.length; i++) {
                                 roomids.push(bookingCartData[i].roomid);
+                                roomfloor.push(bookingCartData[i].roomfloor);
+                                roomnumber.push(bookingCartData[i].roomnumber);
                                 adults.push(bookingCartData[i].adults);
                                 children.push(bookingCartData[i].children);
                                 checkindates.push(bookingCartData[i].checkindate);
@@ -314,7 +332,7 @@ document.getElementById("proceedButton").addEventListener("click", function() {
                             }
 
                             var guestuserid =
-                                '<?php echo $_SESSION['guestuserid']; ?>'; // Get guestuserid from session
+                                '<?php echo $_SESSION['guestuserid']; ?>';
 
                             var xhrBooking = new XMLHttpRequest();
                             xhrBooking.open("POST", "insert_booking.php", true);
@@ -324,11 +342,15 @@ document.getElementById("proceedButton").addEventListener("click", function() {
                                 if (xhrBooking.readyState === 4 && xhrBooking
                                     .status === 200) {
                                     console.log(xhrBooking.responseText);
+
                                 }
                             };
                             var bookingData =
                                 "transactionID=" + transactionID +
                                 "&roomids=" + roomids.join(',') +
+                                "&roomfloor=" + roomfloor.join(',') +
+                                "&roomnumber=" + roomnumber.join(',') +
+
                                 "&adults=" + adults.join(',') +
                                 "&children=" + children.join(',') +
                                 "&checkindates=" + checkindates.join(',') +
@@ -347,8 +369,11 @@ document.getElementById("proceedButton").addEventListener("click", function() {
                         }
                     };
                     xhrBookingCart.send();
-
+                    window.location.href =
+                        'transactioncomplete.php';
                 });
+
+
             }
         }).render('#paypal-button-container');
     } else if (paymentMethod === "gcashqr") {

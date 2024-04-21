@@ -148,52 +148,52 @@ if (!isset($_SESSION['data_inserted'])) {
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                             ?>
-                            <div class="border border-primary w-100 p-2" style="border-radius: 12px">
+                    <div class="border border-primary w-100 p-2" style="border-radius: 12px">
 
-                                <div class="row">
-                                    <div class="col-5">
-                                        <img src="./rooms/<?php echo $row["image"]; ?>" alt="Rooms Image" class="w-100"
-                                            style="border-radius: 8px" />
+                        <div class="row">
+                            <div class="col-5">
+                                <img src="./rooms/<?php echo $row["image"]; ?>" alt="Rooms Image" class="w-100"
+                                    style="border-radius: 8px" />
 
-                                    </div>
-
-                                    <div class="col-4">
-                                        <h4 class="fw-bold mt-2"><?php echo $row['roomtype']; ?></h4>
-                                        <p>
-                                            <i class="lni lni-home"></i> Beds: <?php echo $row['bedsavailable']; ?><br />
-                                            <i class="lni lni-layers"></i> Included:
-                                            <?php echo $row['roominclusion']; ?><br />
-                                            <i class="lni lni-coin"></i> Deposit: <?php echo $row['deposit']; ?><br />
-                                            <i class="lni lni-user"></i> Ocuppancy: <?php echo $row['maxoccupancy']; ?>
-
-                                        </p>
-                                    </div>
-
-                                    <div class="col-3">
-                                        <h4 class="fw-bold mt-2">
-                                            ₱<?php echo number_format($row['price'], 2, '.', ','); ?></h4>
-                                        <small>Per Night</small> <br><br />
-                                        <h8 class="fw-bold mt-2">
-                                            ₱<?php echo number_format($row['reservationprice'], 2, '.', ','); ?>
-                                        </h8><br />Reservation
-
-                                        <br /><br />
-
-                                        <button class="btn btn-primary w-100 reserve-btn" style="border-radius: 8px"
-                                            data-roomid="<?php echo $row['roomid']; ?>"
-                                            data-roomtype="<?php echo $row['roomtype']; ?>"
-                                            data-maxoccupancy="<?php echo $row['maxoccupancy']; ?>"
-                                            data-price="<?php echo $row['price']; ?>"
-                                            data-reservationprice="<?php echo $row['reservationprice']; ?>"
-                                            data-bs-toggle="modal" data-bs-target="#reserveModal">
-                                            Reserve Now
-                                        </button>
-
-                                    </div>
-                                </div>
                             </div>
-                            <br />
-                            <?php
+
+                            <div class="col-4">
+                                <h4 class="fw-bold mt-2"><?php echo $row['roomtype']; ?></h4>
+                                <p>
+                                    <i class="lni lni-home"></i> Beds: <?php echo $row['bedsavailable']; ?><br />
+                                    <i class="lni lni-layers"></i> Included:
+                                    <?php echo $row['roominclusion']; ?><br />
+                                    <i class="lni lni-coin"></i> Deposit: <?php echo $row['deposit']; ?><br />
+                                    <i class="lni lni-user"></i> Ocuppancy: <?php echo $row['maxoccupancy']; ?>
+
+                                </p>
+                            </div>
+
+                            <div class="col-3">
+                                <h4 class="fw-bold mt-2">
+                                    ₱<?php echo number_format($row['price'], 2, '.', ','); ?></h4>
+                                <small>Per Night</small> <br><br />
+                                <h8 class="fw-bold mt-2">
+                                    ₱<?php echo number_format($row['reservationprice'], 2, '.', ','); ?>
+                                </h8><br />Reservation
+
+                                <br /><br />
+
+                                <button class="btn btn-primary w-100 reserve-btn" style="border-radius: 8px"
+                                    data-roomid="<?php echo $row['roomid']; ?>"
+                                    data-roomtype="<?php echo $row['roomtype']; ?>"
+                                    data-maxoccupancy="<?php echo $row['maxoccupancy']; ?>"
+                                    data-price="<?php echo $row['price']; ?>"
+                                    data-reservationprice="<?php echo $row['reservationprice']; ?>"
+                                    data-bs-toggle="modal" data-bs-target="#reserveModal">
+                                    Reserve Now
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <?php
                         }
                     } else {
                         echo "No rooms available.";
@@ -408,15 +408,15 @@ if (!isset($_SESSION['data_inserted'])) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $('.reserve-btn').click(function () {
-        var roomid = $(this).data('roomid');
-        var roomType = $(this).data('roomtype');
-        var maxoccupancy = $(this).data('maxoccupancy');
+$('.reserve-btn').click(function() {
+    var roomid = $(this).data('roomid');
+    var roomType = $(this).data('roomtype');
+    var maxoccupancy = $(this).data('maxoccupancy');
 
-        var price = $(this).data('price');
-        var reservationPrice = $(this).data('reservationprice');
+    var price = $(this).data('price');
+    var reservationPrice = $(this).data('reservationprice');
 
-        $('#roomDetails').html(`
+    $('#roomDetails').html(`
         <h5 class="detailstitle">Room Details</h5>
         <p>Room Type: ${roomType}</p> 
         <p>Max Occupancy: ${maxoccupancy}</p>
@@ -424,112 +424,120 @@ if (!isset($_SESSION['data_inserted'])) {
         <p>Reservation Price: ${reservationPrice}</p>
     `);
 
-        $('#reservationForm').append(`<input type="hidden" name="roomid" value="${roomid}" />`);
-        $('#reservationForm').append(`<input type="hidden" name="price" value="${price}" />`);
-        $('#reservationForm').append(
-            `<input type="hidden" name="reservationprice" value="${reservationPrice}" />`);
+    $('#reservationForm').append(`<input type="hidden" name="roomid" value="${roomid}" />`);
+    $('#reservationForm').append(`<input type="hidden" name="price" value="${price}" />`);
+    $('#reservationForm').append(
+        `<input type="hidden" name="reservationprice" value="${reservationPrice}" />`);
 
-        $('#reserveModal').modal('show');
-    });
+    $('#reserveModal').modal('show');
+});
 
 
-    $('#reservationForm').submit(function (e) {
-        e.preventDefault();
+$('#reservationForm').submit(function(e) {
+    e.preventDefault();
 
-        $.ajax({
-            url: $(this).attr('action'),
-            method: 'POST',
-            data: $(this).serialize(),
-            success: function (response) {
-                Swal.fire({
-                    title: 'Reservation Successful!',
-                    text: 'Your reservation has been successfully Added.',
-                    icon: 'success',
-                    showCancelButton: false,
-                    confirmButtonText: 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        location.reload();
-                    }
-                });
-            },
-            error: function (xhr, status, error) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'An error occurred while processing the reservation. Please try again later.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('.reserve-btn').click(function () {
-            var roomtype = $(this).data('roomtype');
-            $.ajax({
-                url: 'get_room_info.php',
-                method: 'POST',
-                data: {
-                    roomtype: roomtype
-                },
-                dataType: 'json',
-                success: function (response) {
-                    var floors = response.floors;
-                    var roomNumbers = response.roomNumbers;
-
-                    $('#floorSelect').empty();
-                    $('#roomNumberSelect').empty();
-
-                    $.each(floors, function (index, floor) {
-                        $('#floorSelect').append($('<option>', {
-                            value: floor,
-                            text: '' + floor
-                        }));
-                    });
-
-                    $.each(roomNumbers, function (index, room) {
-                        var roomNumber = room.roomnumber;
-                        var status = room.status;
-
-                        var $option = $('<option>', {
-                            value: roomNumber,
-                            text: roomNumber
-                        });
-
-                        if (status === 'Reserved') {
-                            $option.prop('disabled', true);
-                        }
-
-                        $('#roomNumberSelect').append($option);
-                    });
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
+    $.ajax({
+        url: $(this).attr('action'),
+        method: 'POST',
+        data: $(this).serialize(),
+        success: function(response) {
+            Swal.fire({
+                title: 'Reservation Added!',
+                text: 'Your reservation has been successfully Added.',
+                icon: 'success',
+                showCancelButton: false,
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();
                 }
             });
-        });
-    });
-</script>
-<script>
-    document.getElementById('checkInDate').addEventListener('change', function () {
-        var checkInDate = new Date(this.value);
-        var checkOutDateInput = document.getElementById('checkOutDate');
-        var checkOutDate = new Date(checkOutDateInput.value);
-
-        if (checkInDate > checkOutDate) {
-            checkOutDateInput.value = this.value;
+        },
+        error: function(xhr, status, error) {
+            Swal.fire({
+                title: 'Error',
+                text: 'An error occurred while processing the reservation. Please try again later.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         }
-        checkOutDateInput.min = this.value;
     });
+});
 </script>
 <script>
-    var currentDate = new Date().toISOString().split('T')[0];
-    document.getElementById('checkInDate').setAttribute('min', currentDate);
-    document.getElementById('checkOutDate').setAttribute('min', currentDate);
+$(document).ready(function() {
+    // Function to fetch available rooms
+    function fetchAvailableRooms() {
+        var roomtype = $('select[name="room"]').val(); // Get the selected room type from the dropdown
+        var checkInDate = $('#checkInDate').val();
+        var checkInTime = $('#checkInTime').val();
+        var checkOutDate = $('#checkOutDate').val();
+        var checkOutTime = $('#checkOutTime').val();
+
+        $.ajax({
+            url: 'get_room_info.php',
+            method: 'POST',
+            data: {
+                roomtype: roomtype,
+                checkin: checkInDate + ' ' + checkInTime,
+                checkout: checkOutDate + ' ' + checkOutTime
+            },
+            dataType: 'json',
+            success: function(response) {
+                var availableRooms = response.roomInfo;
+                var uniqueFloor = response.uniqueFloor;
+
+                $('#floorSelect').empty();
+                $('#roomNumberSelect').empty();
+
+                // Append unique floor if it's the same for all rooms
+                if (uniqueFloor !== null) {
+                    $('#floorSelect').append($('<option>', {
+                        value: uniqueFloor,
+                        text: 'Floor ' + uniqueFloor
+                    }));
+                }
+
+                // Append room numbers to the room number dropdown
+                $.each(availableRooms, function(index, room) {
+                    $('#roomNumberSelect').append($('<option>', {
+                        value: room.roomnumber,
+                        text: 'Room ' + room.roomnumber
+                    }));
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    // Trigger fetchAvailableRooms() when check-in/check-out dates or times change
+    $('#checkInDate, #checkOutDate, #checkInTime, #checkOutTime').on('change', fetchAvailableRooms);
+
+    // Initial fetch of available rooms when the page loads
+    fetchAvailableRooms();
+});
 </script>
+
+<script>
+document.getElementById('checkInDate').addEventListener('change', function() {
+    var checkInDate = new Date(this.value);
+    var checkOutDateInput = document.getElementById('checkOutDate');
+    var checkOutDate = new Date(checkOutDateInput.value);
+
+    if (checkInDate > checkOutDate) {
+        checkOutDateInput.value = this.value;
+    }
+    checkOutDateInput.min = this.value;
+});
+</script>
+<script>
+var currentDate = new Date().toISOString().split('T')[0];
+document.getElementById('checkInDate').setAttribute('min', currentDate);
+document.getElementById('checkOutDate').setAttribute('min', currentDate);
+</script>
+
 
 
 <?php include ("components/footer.php"); ?>
