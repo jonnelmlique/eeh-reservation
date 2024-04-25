@@ -29,17 +29,18 @@
 
                 <div align="right">
                     <input type="search" class="form-control w-auto" name="search" placeholder="Search"
-                        style="border-radius: 8px" />
+                        style="border-radius: 8px" id="searchInput" />
                 </div>
                 <br />
 
-                <table class="table table-hover table-stripped border border-dark" style="border-radius: 8px">
+                <table class="table table-hover table-stripped border border-dark" style="border-radius: 8px"
+                    id="roomreservation">
                     <thead>
                         <tr>
-                            <td class="bg-dark text-white">#</td>
                             <td class="bg-dark text-white">Guest Details</td>
                             <td class="bg-dark text-white">Room Details</td>
                             <td class="bg-dark text-white">Booking Details</td>
+                            <td class="bg-dark text-white">Payment Details</td>
                             <td class="bg-dark text-white">Action</td>
                         </tr>
                     </thead>
@@ -85,34 +86,41 @@
                         <?php
                         include '../src/config/config.php';
 
-                        $sql = "SELECT rp.*, r.roomtype, r.roomnumber AS roomno 
-        FROM reservationprocess rp 
-        INNER JOIN room r ON rp.roomid = r.roomid";
+                        $sql = "SELECT rp.*, r.roomtype, rp.roomnumber AS roomno, rp.roomfloor 
+                        FROM reservationprocess rp 
+                        INNER JOIN room r ON rp.roomid = r.roomid
+                        WHERE rp.status = 'Pending'";
                         $result = $conn->query($sql);
 
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
                                 echo "<tr>";
-                                echo "<td>" . $row["recervationprocessid"] . "</td>";
                                 echo "<td>";
-                                echo "<b>Booking ID</b>: " . $row["recervationprocessid"] . "<br />";
                                 echo "<b>Name</b>: " . $row["firstname"] . " " . $row["lastname"] . "<br />";
-                                echo "<b>Phone No.</b>: " . $row["mobilenumber"];
+                                echo "<b>Phone No</b>: " . $row["mobilenumber"] . "<br />";
+
+
                                 echo "</td>";
                                 echo "<td>";
                                 echo "<b>Room Type</b>: " . $row["roomtype"] . "<br />";
-                                echo "<b>Room No.</b>: " . $row["roomno"] . "<br />";
-                                echo "<b>Price</b>: Php" . $row["price"];
+                                echo "<b>Room No</b>: " . $row["roomno"] . "<br />";
+                                echo "<b>Room Floor</b>: " . $row["roomfloor"] . "<br />";
                                 echo "</td>";
                                 echo "<td>";
-                                echo "<b>Check-In</b>: " . $row["checkindate"] . " " . $row["checkintime"] . "<br />";
-                                echo "<b>Check-Out</b>: " . $row["checkoutdate"] . " " . $row["checkouttime"] . "<br />";
-                                echo "<b>Paid</b>: Php" . $row["reservationprice"] . "<br />";
-                                echo "<b>Date</b>: " . $row["checkoutdate"];
+                                echo "<b>Check-In</b>: " . $row["checkindate"] . " " . date("h:i A", strtotime($row["checkintime"])) . "<br />";
+                                echo "<b>Check-Out</b>: " . $row["checkoutdate"] . " " . date("h:i A", strtotime($row["checkouttime"])) . "<br />";
+                                echo "<b>Adults</b>: " . $row["adults"] . "<br />";
+                                echo "<b>Children</b>: " . $row["children"] . "<br />";
                                 echo "</td>";
                                 echo "<td>";
-                                echo "<button class='btn btn-success w-100' style='border-radius: 8px' data-bs-toggle='modal' data-bs-target='#confirmModal'>Confirm</button><br />";
-                                echo "<button class='btn btn-danger w-100 mt-2' style='border-radius: 8px' data-bs-toggle='modal' data-bs-target='#cancelModal'>Cancel</button>";
+                                echo "<b>Payment</b>: " . $row["paymentmethod"] . "<br />";
+                                echo "<b>Transaction id</b>: " . $row["transactionid"] . "<br />";
+                                echo "<b>Paid</b>: ₱" . number_format($row["totalafterpromo"], 2) . "<br />";
+
+                                echo "</td>";
+                                echo "<td>";
+                                echo "<button class='btn btn-success w-100 confirmBtn' data-id='" . $row["recervationprocessid"] . "' style='border-radius: 8px'>Confirm</button><br />";
+                                echo "<button class='btn btn-danger w-100 mt-2 cancelBtn' data-id='" . $row["recervationprocessid"] . "' style='border-radius: 8px'>Cancel</button>";
                                 echo "</td>";
                                 echo "</tr>";
                             }
@@ -120,10 +128,8 @@
                             echo "<tr><td colspan='5'>No reservations found</td></tr>";
                         }
 
-                        // Close database connection
                         $conn->close();
                         ?>
-
                     </tbody>
                 </table>
             </div>
@@ -132,45 +138,106 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background-color: #FAEBD7">
-                <div class="modal-body" align="center">
-                    <br /><br />
-
-                    <p>Are you sure you want to confirm?</p>
-                    <br />
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn continue-btn">Continue</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background-color: #FAEBD7">
-                <div class="modal-header" align="center">
-                    <h5 class="modal-title fw-bold">Are you sure?</h5>
-                </div>
-                <div class="modal-body" align="center">
-                    <p>You will not be able to undo this action!</p>
-                    <br />
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn continue-btn">Continue</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="../scripts/jquery.min.js"></script>
     <script src="../scripts/bootstrap.bundle.min.js"></script>
-</body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+    function confirmReservation(id) {
+        swal({
+                title: "Are you sure?",
+                text: "Are you sure you want to confirm this reservation?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: false,
+            })
+            .then((confirm) => {
+                if (confirm) {
 
-</html>
+                    $.ajax({
+                        type: 'POST',
+                        url: 'update_reservation_status.php',
+                        data: {
+                            id: id,
+                            status: 'Accepted'
+                        },
+                        success: function(response) {
+                            swal("Reservation confirmed!", {
+                                icon: "success",
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            swal("Error", "Failed to update reservation status", "error");
+                        }
+                    });
+                }
+            });
+    }
+
+    function cancelReservation(id) {
+        swal({
+                title: "Are you sure?",
+                text: "Are you sure you want to cancel this reservation?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((cancel) => {
+                if (cancel) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'update_reservation_status.php',
+                        data: {
+                            id: id,
+                            status: 'Cancelled'
+                        },
+                        success: function(response) {
+                            swal("Reservation cancelled!", {
+                                icon: "success",
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            swal("Error", "Failed to update reservation status", "error");
+                        }
+                    });
+                }
+            });
+    }
+
+    $(document).ready(function() {
+        $('.confirmBtn').click(function() {
+            var id = $(this).data('id');
+            confirmReservation(id);
+        });
+
+        $('.cancelBtn').click(function() {
+            var id = $(this).data('id');
+            cancelReservation(id);
+        });
+    });
+    </script>
+    <script>
+    $(document).ready(function() {
+        $('#searchInput').on('keyup', function() {
+            var searchText = $(this).val().trim();
+            if (searchText !== '') {
+                $.ajax({
+                    url: 'search.php',
+                    type: 'post',
+                    data: {
+                        search: searchText
+                    },
+                    success: function(response) {
+                        $('#roomreservation tbody').html(response);
+                    }
+                });
+            }
+        });
+    });
+    </script>
+
+    </html>

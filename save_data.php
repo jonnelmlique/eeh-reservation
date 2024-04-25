@@ -2,7 +2,6 @@
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve data from the POST request
     $roomid = $_POST['roomid'];
     $roomName = $_POST['roomName'];
     $roomType = $_POST['roomType'];
@@ -14,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $checkOutDate = $_POST['checkOutDate'];
     $checkOutTime = $_POST['checkOutTime'];
 
-    // Store data in session variables
     $_SESSION['reservation_data'] = array(
         'roomid' => $roomid,
         'roomName' => $roomName,
@@ -28,11 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'checkOutTime' => $checkOutTime
     );
 
-    // Send a success response
     echo json_encode(array('success' => true));
 } else {
-    // If the request method is not POST, send an error response
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405); 
     echo json_encode(array('error' => 'Method Not Allowed'));
 }
 ?>

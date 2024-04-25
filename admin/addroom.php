@@ -6,7 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $roominclusion = $_POST["add-room-inc"];
     $bedsavailable = $_POST["add-room-beds"];
     $maxoccupancy = $_POST["add-room-maxoccupancy"];
-    $deposit = $_POST["add-room-deposit"];
     $price = $_POST["add-price"];
     $reservationprice = $_POST["add-rprice"];
     $status = $_POST["add-status"];
@@ -47,8 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $sql = "INSERT INTO room (roomtype, roominclusion, bedsavailable, maxoccupancy, deposit, price, reservationprice,  status, image) 
-            VALUES ('$roomtype', '$roominclusion', '$bedsavailable', '$maxoccupancy', '$deposit', '$price',  '$reservationprice', '$status', '$image')";
+    $sql = "INSERT INTO room (roomtype, roominclusion, bedsavailable, maxoccupancy, price, reservationprice,  status, image) 
+            VALUES ('$roomtype', '$roominclusion', '$bedsavailable', '$maxoccupancy', '$price',  '$reservationprice', '$status', '$image')";
 
     if ($conn->query($sql) === TRUE) {
         $message = "success";

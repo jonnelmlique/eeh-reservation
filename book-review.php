@@ -39,7 +39,7 @@ if (isset($_SESSION['guestuserid'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Hotel Reservation System | Book Review</title>
+    <title>Book Review</title>
 
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
     <link href="styles/booking.css" rel="stylesheet" />
@@ -47,6 +47,10 @@ if (isset($_SESSION['guestuserid'])) {
     <link href="styles/dashboard.css" rel="stylesheet" />
     <link href="styles/guest-details.css" rel="stylesheet" />
     <link href="styles/scrollbar.css" rel="stylesheet" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <div><?php include ("componentshome/navbar.php"); ?>
 
@@ -88,7 +92,6 @@ if (isset($_SESSION['guestuserid'])) {
                                     echo "<p><strong>Room Type:</strong> $roomtype</p>";
                                     echo "<p><strong>Check-in:</strong> $checkinDate $checkinTime</p>";
                                     echo "<p><strong>Check-out:</strong> $checkoutDate $checkoutTime</p>";
-                                    echo "<p><strong>Reservation Price:</strong> ₱" . number_format($reservationPrice, 2) . "</p>";
                                     echo "<hr>";
                                 }
 
@@ -142,20 +145,126 @@ if (isset($_SESSION['guestuserid'])) {
                         <div style="border-width: 1px; border-color: black; border-style: dashed"></div>
 
                         <br /><br />
-                        <h4 class="fw-bold text-uppercase">Terms &amp; Conditions</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                            ut
-                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                            ullamco
-                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-                            in
-                            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </p>
-                        <br />
+                        <div class="container">
+                            <div>
+                                <h4 class="fw-bold text-uppercase" data-toggle="collapse" href="#termsCollapse"
+                                    role="button" aria-expanded="false" aria-controls="termsCollapse">ENCHANTED ESCAPES
+                                    HOTEL | TERMS AND CONDITIONS</h4>
+                                <div class="container">
+                                    <p><strong>Condition of Stay</strong></p>
+                                    <p>The following terms and conditions will apply to all bookings at the Enchanted
+                                        Escapes Hotel. Guests
+                                        are asked to read these terms and conditions carefully before making a booking,
+                                        paying particular
+                                        attention to the deposit and cancellation policies, as well as any other terms
+                                        and conditions marked
+                                        in bold. In these terms and conditions: "Agreement" means the booking
+                                        confirmation read together
+                                        with these Terms & Conditions. "Guest" means the person who will be accommodated
+                                        at the Hotel.
+                                        "Hotel" means the Enchanted Escapes Hotel. "Terms & Conditions" means the terms
+                                        and conditions of
+                                        stay. These terms and conditions apply to all bookings made at the Enchanted
+                                        Escapes Hotel.</p>
+                                </div>
+                                <div>
+                                    <h4 class="fw-bold text-uppercase" data-toggle="collapse" href="#bookingCollapse"
+                                        role="button" aria-expanded="false" aria-controls="bookingCollapse">Booking
+                                        Procedure </h4>
+                                    <div class="container collapse" id="bookingCollapse">
+                                        <ol>
+                                            <li>Upon securing the booking, guests will receive a written confirmation
+                                                through one of the following
+                                                methods:
+                                                <ol type="a">
+                                                    <li>Payment of a deposit</li>
+                                                    <li>Presentation of a billing voucher (for bookings made through a
+                                                        travel agent or tour operator)</li>
+                                                </ol>
+                                            </li>
+                                            <li>When making a booking, guests are required to provide the following
+                                                information to the Hotel:
+                                                <ol type="a">
+                                                    <li>Full name and contact details</li>
+                                                    <li>Requested dates of stay and estimated time of arrival</li>
+                                                    <li>Accommodation fees based on the Hotel's published rates</li>
+                                                    <li>Any additional information deemed necessary by the Hotel</li>
+                                                </ol>
+                                            </li>
+                                            <li>If a guest wishes to extend their stay, a new accommodation agreement
+                                                will be established upon the
+                                                submission of the request.</li>
+                                            <li>The accommodation agreement is considered valid once the Hotel accepts
+                                                the booking unless the Hotel can
+                                                prove otherwise.</li>
+                                            <li>Once the accommodation agreement is established, the guest must make a
+                                                deposit payment by the specified
+                                                deadline set by the Hotel. This deposit will be applied towards the
+                                                total charges payable by the
+                                                guest.</li>
+                                            <li>Failure to pay the required deposit by the specified deadline, unless
+                                                the Hotel has provided an alternative
+                                                notification, will result in the termination of the accommodation
+                                                agreement.</li>
+                                        </ol>
+                                        <div class="collapse show" id="termsCollapse">
+                                            <p><strong>Charges, Deposit, and Payment</strong></p>
+                                            <ol>
+                                                <li>Prices quoted by Enchanted Escapes Hotel include VAT. Price lists
+                                                    for additional items, such as room
+                                                    service and restaurant meals, can be obtained upon request or are
+                                                    displayed at relevant locations within
+                                                    the hotel.</li>
+                                                <li>All charges incurred during a guest's stay can be settled
+                                                    immediately or charged to the guest's room
+                                                    account. If charges are debited to the room account, the full
+                                                    balance must be settled upon check-out when
+                                                    presenting the invoice.</li>
+                                                <li>Bookings must be secured using one of the following methods:
+                                                    <ol type="a">
+                                                        <li>Payment of a percentage of the total accommodation costs
+                                                        </li>
+                                                    </ol>
+                                                </li>
+                                                <li>Payment can be made through the following methods:
+                                                    <ol type="a">
+                                                        <li>Electronic funds transfer into the bank account specified on
+                                                            the proforma invoice</li>
+                                                    </ol>
+                                                </li>
+                                                <li>Failure to pay the required deposit or present a billing voucher by
+                                                    the due date may result in the hotel
+                                                    treating the booking as canceled without further notice.</li>
+                                                <li>The hotel reserves the right to accept payment only in the
+                                                    currencies it has specified to guests. Prior
+                                                    notice may be given if the hotel does not accept certain currencies.
+                                                </li>
+                                            </ol>
+                                        </div>
+
+                                        <p><strong>Cancellations and Non-Arrivals</strong></p>
+                                        <p>Cancellations are required to be submitted in writing. Guests are
+                                            responsible for the payment of a cancellation fee, which will be
+                                            determined by Enchanted Escapes Hotel at the time of booking
+                                            confirmation. Please note that changes to rooms, including switching
+                                            rooms, are not permitted. Should you have any inquiries or requests
+                                            related to cancellations and refunds, we kindly ask that you reach out
+                                            to us through the provided contact information. </p>
+                                        <p><strong>Changes to Bookings </strong></p>
+                                        <ol>
+                                            <li>Changes to any bookings must be made in writing. </li>
+                                            <li>No amendments are guaranteed until written confirmation is provided by
+                                                Enchanted Escapes Hotel. </li>
+                                            <li>Rate variations may apply, depending on the nature of the change
+                                                requested</li>
+
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <br />
-
 
 
 
@@ -170,6 +279,8 @@ if (isset($_SESSION['guestuserid'])) {
                         WHERE bc.guestuserid = '$guestuserid'";
                             $result = $conn->query($sql);
                             $totalReservationPrice = 0;
+                            $totalReservationPriceWithoutPromo = 0;
+                            $promoApplied = false;
 
                             echo "<h4 class='fw-bold text-uppercase mt-2' align='center'>Your Booking Summary</h4>";
 
@@ -186,6 +297,7 @@ if (isset($_SESSION['guestuserid'])) {
                                     $roomnumber = $row['roomnumber'];
                                     $reservationPrice = $row['reservationprice'];
                                     $totalReservationPrice += $reservationPrice;
+                                    $totalReservationPriceWithoutPromo += $reservationPrice;
 
                                     echo "<div class='row mx-2 pt-2'>
                                 <div class='col-6' align='center'>
@@ -220,11 +332,53 @@ if (isset($_SESSION['guestuserid'])) {
                                 </div>
                                 <hr class='mt-2 mx-3' />";
                                 }
-                                echo "<div class='row mx-2 pt-2'>
-                            <div class='col-6'><b>Total</b></div>
-                            <div class='col-6' align='right'>₱" . number_format($totalReservationPrice, 2) . "</div>
-                        </div>";
+                                if (isset($_POST['add-promo'])) {
+                                    $promoName = $_POST['add-promo'];
+                                    $promoQuery = "SELECT * FROM eespromo WHERE promoname = '$promoName'";
+                                    $promoResult = $conn->query($promoQuery);
 
+                                    if ($promoResult->num_rows > 0) {
+                                        $promoRow = $promoResult->fetch_assoc();
+                                        $promoPercentage = $promoRow['percentage'];
+                                        $discountAmount = $totalReservationPrice * ($promoPercentage / 100);
+                                        $totalReservationPrice -= $discountAmount;
+                                        $promoId = $promoRow['promoid'];
+
+                                        $updatePromoQuery = "UPDATE eespromo SET available = available - 1 WHERE promoid = $promoId";
+                                        mysqli_query($conn, $updatePromoQuery);
+                                        ;
+
+
+                                        $promoApplied = true;
+
+
+                                        echo "<div class='row mx-2 pt-2'>
+                        <div class='col-12' align='center'>
+                            <b class='text-uppercase'>Promotion Applied:</b><br />
+                            <small>$promoName ($promoPercentage% Discount)</small>
+                        </div>
+                    </div>";
+                                    } else {
+                                        echo "<div class='row mx-2 pt-2'>
+                        <div class='col-12' align='center'>
+                            <b class='text-uppercase text-danger'>Promotion Not Found!</b><br />
+                            <small>The entered promotion code does not exist.</small>
+                        </div>
+                    </div>";
+                                    }
+                                }
+                                echo "<div class='row mx-2 pt-2'>
+                                <div class='col-6'><b>Total</b></div>
+                                <div id='total-after-promo' class='col-6' align='right'>₱" . number_format($totalReservationPriceWithoutPromo, 2) . "</div>
+                              </div>";
+
+                                if ($promoApplied) {
+                                    echo "<div class='row mx-2 pt-2'>
+                                    <div class='col-6'><b>Total with Promo</b></div>
+                                    <div id='total-after-promo' class='col-6' align='right'>₱" . number_format($totalReservationPrice, 2) . "</div>
+                                  </div>";
+
+                                }
                             } else {
                                 echo "<div align='center'>No bookings found.</div>";
                             }
@@ -233,8 +387,25 @@ if (isset($_SESSION['guestuserid'])) {
                         }
                         ?>
                     </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-4">
+                            <p class="mt-2">Add Promo:</p>
+                        </div>
+                        <div class="col-12">
+                            <form method="POST" action="">
+                                <input type="text" class="form-control" name="add-promo" style="border-radius: 8px"
+                                    placeholder="Promo name" required />
+                                <button type="submit" class="btn btn-primary mt-2"
+                                    style="width: 840px; transition: background-color 0.3s;">Apply
+                                    Promo</button>
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
                 <br />
+
                 <select class="form-control" id="paymentMethod" name="paymentMethod">
                     <option value="PayPal">PayPal</option>
                     <option value="gcashqr">GCash QR</option>
@@ -244,8 +415,9 @@ if (isset($_SESSION['guestuserid'])) {
                 </div>
 
                 <br />
-                <button id="proceedButton" class="btn continue-btn w-100 text-uppercase"
-                    style="border-radius: 8px">Continue</button>
+                <button id="proceedButton" class="btn btn-primary mt-2"
+                    style="border-radius: 8px; width: 860px; transition: background-color 0.3s;">Continue</button>
+
             </div>
 
         </div>
@@ -258,6 +430,54 @@ if (isset($_SESSION['guestuserid'])) {
 </div>
 <br /><br />
 </div>
+<div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+    <!-- <div class="modal-dialog modal-xl"> -->
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content" style="background-color: #FAEBD7">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">GCASH QR</h5>
+            </div>
+
+            <div class="modal-body">
+                <div class="roomdetails" id="roomDetails">
+                    <img src="./assets/myQRgcash.png" width="200px" height="300px" style="margin-left: 125px;">
+                </div>
+
+                <div class="row">
+                    <div class="col-4" align="right">
+                        <p class="mt-2">Gcash Number:</p>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" name="add-gcashnum" style="border-radius: 8px"
+                            placeholder="Gcahs Number"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)" maxlength="11"
+                            required />
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-4" align="right">
+                        <p class="mt-2">Reference No:</p>
+                    </div>
+                    <div class="col-8"><input type="text" class="form-control" name="add-referenceno"
+                            style="border-radius: 8px" placeholder="Reference No"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)" maxlength="13"
+                            required /></div>
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn continue-btn" id="gcash-proceed">Continue</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+
 <script
     src="https://www.paypal.com/sdk/js?client-id=AS4sEArJLWv67KwtFroZxWfiRZvI_X2Tuc899WJvoHsL96xjHUFdw5m-TGP02kafr5y37nXZGVQfbNGI&currency=PHP&disable-funding=card"
     data-sdk-integration-source="button-factory"></script>
@@ -267,126 +487,249 @@ if (isset($_SESSION['guestuserid'])) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <?php include ("components/footer.php"); ?>
+
+
+
 <script>
-document.getElementById("proceedButton").addEventListener("click", function() {
-    console.log("Clicked Proceed to Checkout button");
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("proceedButton").addEventListener("click", function() {
+        console.log("Clicked Proceed to Checkout button");
 
-    var paymentMethod = document.getElementById("paymentMethod").value;
-    if (paymentMethod === "PayPal") {
-        var container = document.getElementById("paypal-button-container");
-        container.innerHTML = "";
+        var paymentMethod = document.getElementById("paymentMethod").value;
 
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            currency_code: 'PHP',
-                            value: '<?php echo $totalReservationPrice; ?>'
-                        }
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    var transactionID = details.id;
+        if (paymentMethod === "PayPal") {
+            // PayPal payment method
+            var container = document.getElementById("paypal-button-container");
+            container.innerHTML = "";
 
-                    console.log("Transaction ID:", transactionID);
-
-                    var xhrBookingCart = new XMLHttpRequest();
-                    xhrBookingCart.open("GET", "get_roomid.php",
-                        true); // Corrected file name
-                    xhrBookingCart.onreadystatechange = function() {
-                        if (xhrBookingCart.readyState === 4 && xhrBookingCart.status ===
-                            200) {
-                            var bookingCartData = JSON.parse(xhrBookingCart
-                                .responseText);
-                            var roomids = [];
-                            var roomfloor = [];
-                            var roomnumber = [];
-                            var adults = [];
-                            var children = [];
-                            var checkindates = [];
-                            var checkintimes = [];
-                            var checkoutdates = [];
-                            var checkouttimes = [];
-                            var prices = [];
-                            var reservationprices = [];
-                            var totalreservationprice =
-                                '<?php echo $totalReservationPrice; ?>';
-
-
-                            for (var i = 0; i < bookingCartData.length; i++) {
-                                roomids.push(bookingCartData[i].roomid);
-                                roomfloor.push(bookingCartData[i].roomfloor);
-                                roomnumber.push(bookingCartData[i].roomnumber);
-                                adults.push(bookingCartData[i].adults);
-                                children.push(bookingCartData[i].children);
-                                checkindates.push(bookingCartData[i].checkindate);
-                                checkintimes.push(bookingCartData[i].checkintime);
-                                checkoutdates.push(bookingCartData[i].checkoutdate);
-                                checkouttimes.push(bookingCartData[i].checkouttime);
-                                prices.push(bookingCartData[i].price);
-                                reservationprices.push(bookingCartData[i]
-                                    .reservationprice);
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                currency_code: 'PHP',
+                                value: '<?php echo $totalReservationPrice; ?>'
                             }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        var transactionID = details.id;
 
-                            var guestuserid =
-                                '<?php echo $_SESSION['guestuserid']; ?>';
+                        console.log("Transaction ID:", transactionID);
 
-                            var xhrBooking = new XMLHttpRequest();
-                            xhrBooking.open("POST", "insert_booking.php", true);
-                            xhrBooking.setRequestHeader("Content-Type",
-                                "application/x-www-form-urlencoded");
-                            xhrBooking.onreadystatechange = function() {
-                                if (xhrBooking.readyState === 4 && xhrBooking
-                                    .status === 200) {
-                                    console.log(xhrBooking.responseText);
+                        var xhrBookingCart = new XMLHttpRequest();
+                        xhrBookingCart.open("GET", "get_roomid.php", true);
+                        xhrBookingCart.onreadystatechange = function() {
+                            if (xhrBookingCart.readyState === 4 &&
+                                xhrBookingCart.status === 200) {
+                                var bookingCartData = JSON.parse(
+                                    xhrBookingCart
+                                    .responseText);
+                                var roomids = [];
+                                var roomfloor = [];
+                                var roomnumber = [];
+                                var adults = [];
+                                var children = [];
+                                var checkindates = [];
+                                var checkintimes = [];
+                                var checkoutdates = [];
+                                var checkouttimes = [];
+                                var prices = [];
+                                var reservationprices = [];
 
+                                for (var i = 0; i < bookingCartData
+                                    .length; i++) {
+                                    roomids.push(bookingCartData[i].roomid);
+                                    roomfloor.push(bookingCartData[i]
+                                        .roomfloor);
+                                    roomnumber.push(bookingCartData[i]
+                                        .roomnumber);
+                                    adults.push(bookingCartData[i].adults);
+                                    children.push(bookingCartData[i]
+                                        .children);
+                                    checkindates.push(bookingCartData[i]
+                                        .checkindate);
+                                    checkintimes.push(bookingCartData[i]
+                                        .checkintime);
+                                    checkoutdates.push(bookingCartData[i]
+                                        .checkoutdate);
+                                    checkouttimes.push(bookingCartData[i]
+                                        .checkouttime);
+                                    prices.push(bookingCartData[i].price);
+                                    reservationprices.push(bookingCartData[
+                                            i]
+                                        .reservationprice);
                                 }
-                            };
-                            var bookingData =
-                                "transactionID=" + transactionID +
-                                "&roomids=" + roomids.join(',') +
-                                "&roomfloor=" + roomfloor.join(',') +
-                                "&roomnumber=" + roomnumber.join(',') +
 
-                                "&adults=" + adults.join(',') +
-                                "&children=" + children.join(',') +
-                                "&checkindates=" + checkindates.join(',') +
-                                "&checkintimes=" + checkintimes.join(',') +
-                                "&checkoutdates=" + checkoutdates.join(',') +
-                                "&checkouttimes=" + checkouttimes.join(',') +
-                                "&prices=" + prices.join(',') +
-                                "&reservationprices=" + reservationprices.join(',') +
-                                "&totalreservationprice=" + totalreservationprice +
-                                "&paymentMethod=" + paymentMethod +
-                                "&guestuserid=" +
-                                guestuserid;
-                            console.log("Booking Data:", bookingData);
-                            xhrBooking.send(bookingData);
+                                var guestuserid =
+                                    '<?php echo $_SESSION['guestuserid']; ?>';
 
-                        }
-                    };
-                    xhrBookingCart.send();
-                    window.location.href =
-                        'transactioncomplete.php';
+                                var xhrBooking = new XMLHttpRequest();
+                                xhrBooking.open("POST",
+                                    "insert_booking.php",
+                                    true);
+                                xhrBooking.setRequestHeader("Content-Type",
+                                    "application/x-www-form-urlencoded");
+                                xhrBooking.onreadystatechange = function() {
+                                    if (xhrBooking.readyState === 4 &&
+                                        xhrBooking.status === 200) {
+                                        console.log(xhrBooking
+                                            .responseText);
+                                    }
+                                };
+                                var bookingData =
+                                    "transactionID=" + transactionID +
+                                    "&roomids=" + roomids.join(',') +
+                                    "&roomfloor=" + roomfloor.join(',') +
+                                    "&roomnumber=" + roomnumber.join(',') +
+                                    "&adults=" + adults.join(',') +
+                                    "&children=" + children.join(',') +
+                                    "&checkindates=" + checkindates.join(
+                                        ',') +
+                                    "&checkintimes=" + checkintimes.join(
+                                        ',') +
+                                    "&checkoutdates=" + checkoutdates.join(
+                                        ',') +
+                                    "&checkouttimes=" + checkouttimes.join(
+                                        ',') +
+                                    "&prices=" + prices.join(',') +
+                                    "&reservationprices=" +
+                                    reservationprices
+                                    .join(',') +
+                                    "&totalreservationprice=" +
+                                    '<?php echo $totalReservationPriceWithoutPromo; ?>' +
+                                    "&paymentMethod=" + paymentMethod +
+                                    "&guestuserid=" + guestuserid +
+                                    "&totalafterpromo=" +
+                                    '<?php echo $totalReservationPrice; ?>';
+                                console.log("Booking Data:", bookingData);
+                                xhrBooking.send(bookingData);
+
+                            }
+                        };
+                        xhrBookingCart.send();
+                        window.location.href =
+                            "book-confirm.php?transactionID=" +
+                            transactionID;
+
+                    });
+                }
+            }).render('#paypal-button-container');
+        } else if (paymentMethod === "gcashqr") {
+            // GCash QR payment method
+            $('#reserveModal').modal('show');
+
+            document.getElementById("gcash-proceed").addEventListener("click", function() {
+                var gcashNumberInputs = document.querySelectorAll(
+                    "input[name='add-gcashnum']");
+                var referenceNoInputs = document.querySelectorAll(
+                    "input[name='add-referenceno']");
+
+                var gcashNumber = [];
+                var referenceNo = [];
+
+                gcashNumberInputs.forEach(function(input) {
+                    gcashNumber.push(input.value);
                 });
 
+                referenceNoInputs.forEach(function(input) {
+                    referenceNo.push(input.value);
+                });
+                console.log("Reference Number:", referenceNo);
 
-            }
-        }).render('#paypal-button-container');
-    } else if (paymentMethod === "gcashqr") {
-        window.location.href = 'transactioncomplete.php';
-    } else {
-        alert("Proceeding with other payment method.");
-    }
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0');
+                var yyyy = today.getFullYear();
+                var hours = String(today.getHours()).padStart(2, '0');
+                var minutes = String(today.getMinutes()).padStart(2, '0');
+                var seconds = String(today.getSeconds()).padStart(2, '0');
+                var randomSuffix = Math.floor(Math.random() * 10000);
+                var transactionID = randomSuffix + mm + seconds + dd + hours + minutes +
+                    yyyy;
+
+                var xhrBookingCart = new XMLHttpRequest();
+                xhrBookingCart.open("GET", "get_roomid.php", true);
+                xhrBookingCart.onreadystatechange = function() {
+                    if (xhrBookingCart.readyState === 4 && xhrBookingCart.status ===
+                        200) {
+                        var bookingCartData = JSON.parse(xhrBookingCart.responseText);
+                        var roomids = [];
+                        var roomfloor = [];
+                        var roomnumber = [];
+                        var adults = [];
+                        var children = [];
+                        var checkindates = [];
+                        var checkintimes = [];
+                        var checkoutdates = [];
+                        var checkouttimes = [];
+                        var prices = [];
+                        var reservationprices = [];
+
+                        for (var i = 0; i < bookingCartData.length; i++) {
+                            roomids.push(bookingCartData[i].roomid);
+                            roomfloor.push(bookingCartData[i].roomfloor);
+                            roomnumber.push(bookingCartData[i].roomnumber);
+                            adults.push(bookingCartData[i].adults);
+                            children.push(bookingCartData[i].children);
+                            checkindates.push(bookingCartData[i].checkindate);
+                            checkintimes.push(bookingCartData[i].checkintime);
+                            checkoutdates.push(bookingCartData[i].checkoutdate);
+                            checkouttimes.push(bookingCartData[i].checkouttime);
+                            prices.push(bookingCartData[i].price);
+                            reservationprices.push(bookingCartData[i].reservationprice);
+                        }
+
+                        var guestuserid = '<?php echo $_SESSION['guestuserid']; ?>';
+
+                        var xhrBooking = new XMLHttpRequest();
+                        xhrBooking.open("POST", "insert_booking.php", true);
+                        xhrBooking.setRequestHeader("Content-Type",
+                            "application/x-www-form-urlencoded");
+                        xhrBooking.onreadystatechange = function() {
+                            if (xhrBooking.readyState === 4 && xhrBooking.status ===
+                                200) {
+                                console.log(xhrBooking.responseText);
+                            }
+                        };
+                        var bookingData =
+                            "transactionID=" + transactionID +
+                            "&roomids=" + roomids.join(',') +
+                            "&roomfloor=" + roomfloor.join(',') +
+                            "&roomnumber=" + roomnumber.join(',') +
+                            "&adults=" + adults.join(',') +
+                            "&children=" + children.join(',') +
+                            "&checkindates=" + checkindates.join(',') +
+                            "&checkintimes=" + checkintimes.join(',') +
+                            "&checkoutdates=" + checkoutdates.join(',') +
+                            "&checkouttimes=" + checkouttimes.join(',') +
+                            "&prices=" + prices.join(',') +
+                            "&reservationprices=" + reservationprices.join(',') +
+                            "&totalreservationprice=" +
+                            '<?php echo $totalReservationPriceWithoutPromo; ?>' +
+                            "&paymentMethod=" + paymentMethod +
+                            "&gcashNumber=" + gcashNumber +
+                            "&referenceNo=" + referenceNo +
+                            "&guestuserid=" + guestuserid +
+                            "&totalafterpromo=" +
+                            '<?php echo $totalReservationPrice; ?>';
+                        console.log("Booking Data:", bookingData);
+                        xhrBooking.send(bookingData);
+
+                    }
+                };
+                xhrBookingCart.send();
+                window.location.href = "book-confirm.php?transactionID=" + transactionID;
+
+            });
+        } else {
+            alert("Proceeding with other payment method.");
+        }
+    });
 });
 </script>
-
-
-
-
 
 </body>
 

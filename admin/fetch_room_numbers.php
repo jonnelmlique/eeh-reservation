@@ -1,6 +1,5 @@
 <?php
-include "../src/config/config.php"; // Include your database connection configuration file
-
+include "../src/config/config.php"; 
 if (isset($_POST['roomType']) && isset($_POST['floor'])) {
     $roomType = $_POST['roomType'];
     $floor = $_POST['floor'];

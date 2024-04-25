@@ -28,13 +28,14 @@
 
                 <div align="right">
                     <input type="search" class="form-control w-auto d-inline mx-2" name="search" placeholder="Search"
-                        style="border-radius: 8px" />
+                        style="border-radius: 8px" id="searchInput" />
                     <button class="btn btn-primary text-uppercase px-4" data-bs-toggle="modal"
                         data-bs-target="#addModal">Add</button>
+                    <a href="addroominfo.php" class="btn btn-primary text-uppercase px-4">Add Room Info</a>
                 </div>
                 <br />
                 <table class="table table-hover table-stripped border border-dark"
-                    style="border-radius: 8px; table-layout: fixed">
+                    style="border-radius: 8px; table-layout: fixed" id="roomsearch">
                     <thead>
                         <tr>
                             <td class="bg-dark text-white">Room Type</td>
@@ -68,13 +69,19 @@
                                 echo "</td>";
                                 echo "<td>";
                                 $beds_available = $row['bedsavailable'];
-                                echo "<div class='cloud'>" . $beds_available . "</div>";
+                                $beds_array = explode(',', $beds_available); 
+                                foreach ($beds_array as $bed) {
+                                    echo "<div class='cloud'>" . $bed . "</div>"; 
+                                }
                                 echo "</td>";
+
+
 
                                 echo "<td>" . $row['maxoccupancy'] . "</td>";
                                 echo "<td>₱" . number_format($row['reservationprice'], 2, '.', ',') . "</td>";
                                 echo "<td><p class='text-" . ($row['status'] == 'Booked' ? 'danger' : 'success') . " '>" . $row['status'] . "</p></td>";
-                                echo "<td><button class='btn btn-success w-100 px-2 edit-room-btn' data-bs-toggle='modal' data-bs-target='#editModal' data-room-id='" . $row['roomid'] . "'>Edit</button></td>";
+                                echo "<td><a href='./editroom.php?id=" . $row["roomid"] . "' class='btn btn-success w-100 px-2 edit-room-btn'>Edit</td>";
+
                                 echo "</tr>";
                             }
                         } else {
@@ -86,53 +93,7 @@
 
                 </table>
 
-                <!-- <table class="table table-hover table-stripped border border-dark"
-                    style="border-radius: 8px; table-layout: fixed">
-                    <thead>
-                        <tr>
-                            <td class="bg-dark text-white">Room Number</td>
-                            <td class="bg-dark text-white">Room Name</td>
-                            <td class="bg-dark text-white">Room Inclusion</td>
-                            <td class="bg-dark text-white">Room Type</td>
-                            <td class="bg-dark text-white">Price</td>
-                            <td class="bg-dark text-white">Status</td>
-                            <td class="bg-dark text-white">Action</td>
-                            <td class="bg-dark text-white"></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>001</td>
-                            <td><b>Grand Deluxe</b></td>
-                            <td>
-                                <p>Breakfast<br />King-sized Bed<br />Free WiFi</p>
-                            </td>
-                            <td>Grand Deluxe</td>
-                            <td>P10,000</td>
-                            <td>
-                                <p class="text-danger text-uppercase">Booked</p>
-                            </td>
-                            <td><button class="btn btn-success w-100 px-2" data-bs-toggle="modal"
-                                    data-bs-target="#editModal">Edit</button></td>
-                            <td><img src="../assets/deluxe.jpg" class="w-100" /></td>
-                        </tr>
-                        <tr>
-                            <td>002</td>
-                            <td><b>Grand Deluxe</b></td>
-                            <td>
-                                <p>Breakfast<br />King-sized Bed<br />Free WiFi</p>
-                            </td>
-                            <td>Grand Deluxe</td>
-                            <td>P10,000</td>
-                            <td>
-                                <p class="text-success text-uppercase">Available</p>
-                            </td>
-                            <td><button class="btn btn-success w-100 px-2" data-bs-toggle="modal"
-                                    data-bs-target="#editModal">Edit</button></td>
-                            <td><img src="../assets/deluxe.jpg" class="w-100" /></td>
-                        </tr>
-                    </tbody>
-                </table> -->
+
             </div>
 
             <br /><br />
@@ -195,19 +156,7 @@
                                 style="border-radius: 8px" placeholder="Max Occupancy" required /></div>
                     </div>
 
-                    <div class="row mt-1">
-                        <div class="col-4" align="right">
-                            <p class="mt-2">Deposit</p>
-                        </div>
-                        <div class="col-8">
-                            <select class="form-control" name="edit-room-deposit" style="border-radius: 8px" required>
-                                <option value="Required">Required</option>
-                                <option value="Not required">Not Required</option>
 
-
-                            </select>
-                        </div>
-                    </div>
 
 
                     <div class="row mt-1">
@@ -259,6 +208,7 @@
             <div class="modal-content" style="background-color: #FAEBD7">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold">Add Room</h5>
+
                 </div>
                 <div class="modal-body" align="center">
                     <form method="post" action="addroom.php" enctype="multipart/form-data" class="needs-validation">
@@ -312,18 +262,6 @@
                                         placeholder="Max Occupancy" required /></div>
                             </div>
 
-                            <div class="row mt-1">
-                                <div class="col-4" align="right">
-                                    <p class="mt-2">Deposit</p>
-                                </div>
-                                <div class="col-8">
-                                    <select class="form-control" name="add-room-deposit" style="border-radius: 8px"
-                                        required>
-                                        <option value="Required">Required</option>
-                                        <option value="Not required">Not Required</option>
-                                    </select>
-                                </div>
-                            </div>
 
 
                             <div class="row mt-1">
@@ -461,8 +399,7 @@
                         $('input[name="edit-room-beds"]').val(response.bedsavailable);
                         $('input[name="edit-room-maxoccupancy"]').val(response
                             .maxoccupancy);
-                        $('select[name="edit-room-deposit"]').val(response
-                            .deposit);
+                        $('select[name="edit-room-deposit"]').val(response.deposit);
                         $('input[name="edit-price"]').val(response.price);
                         $('input[name="edit-rprice"]').val(response.reservationprice);
                         $('select[name="edit-status"]').val(response.status);
@@ -470,9 +407,7 @@
                 });
             });
 
-            // Handle save button click
             $('#save-room-btn').click(function() {
-                // Gather data from input fields
                 var roomId = $('.edit-room-btn').data('room-id');
                 var roomType = $('#edit-room-type').val();
                 var roomInc = $('input[name="edit-room-inc"]').val();
@@ -483,7 +418,6 @@
                 var reservationPrice = $('input[name="edit-rprice"]').val();
                 var status = $('select[name="edit-status"]').val();
 
-                // Create FormData object to send data including file
                 var formData = new FormData();
                 formData.append('room_id', roomId);
                 formData.append('room_type', roomType);
@@ -494,16 +428,13 @@
                 formData.append('price', price);
                 formData.append('reservation_price', reservationPrice);
                 formData.append('status', status);
-                // Append image file if it's not empty
                 var imageFile = $('input[name="edit-image"]').prop('files')[0];
                 if (imageFile) {
                     formData.append('edit-image', imageFile);
                 }
 
-                // Add action parameter for update
                 formData.append('action', 'update');
 
-                // Send AJAX request to update room information
                 $.ajax({
                     url: 'fetch_room.php',
                     type: 'post',
@@ -512,14 +443,12 @@
                     processData: false,
                     dataType: 'json',
                     success: function(response) {
-                        // Handle success or error response
                         if (response.success) {
-                            // Display success message using SweetAlert
                             Swal.fire({
                                 title: 'Success!',
                                 text: response.success,
                                 icon: 'success',
-                                onfirmButtonText: 'OK'
+                                confirmButtonText: 'OK'
                             }).then(function() {
                                 location.reload();
                             });
@@ -530,10 +459,16 @@
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             });
+                        } else {
+                            Swal.fire({
+                                title: 'No Changes Detected',
+                                text: 'There are no changes in the room information.',
+                                icon: 'info',
+                                confirmButtonText: 'OK'
+                            });
                         }
                     },
                     error: function(xhr, status, error) {
-                        // Handle error
                         Swal.fire({
                             title: 'Error',
                             text: 'An unexpected error occurred. Please try again.',
@@ -542,6 +477,25 @@
                         });
                     }
                 });
+            });
+        });
+        </script>
+        <script>
+        $(document).ready(function() {
+            $('#searchInput').on('keyup', function() {
+                var searchText = $(this).val().trim();
+                if (searchText !== '') {
+                    $.ajax({
+                        url: 'searchrooms.php',
+                        type: 'post',
+                        data: {
+                            search: searchText
+                        },
+                        success: function(response) {
+                            $('#roomsearch tbody').html(response);
+                        }
+                    });
+                }
             });
         });
         </script>

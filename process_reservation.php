@@ -21,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $price = $_POST['price'];
     $reservationprice = $_POST['reservationprice'];
 
-    // Insert the new reservation
     $sql = "INSERT INTO reservationsummary (guestuserid, roomid, roomfloor, roomnumber, adults, children, checkindate, checkintime, checkoutdate, checkouttime, price, reservationprice) 
             VALUES ('$guestuserid', '$roomid', '$roomfloor', '$roomnumber', '$adults', '$children', '$checkindate', '$checkintime', '$checkoutdate', '$checkouttime', '$price', '$reservationprice')";
 

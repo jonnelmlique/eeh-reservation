@@ -2,7 +2,6 @@
 session_start();
 
 if (isset($_SESSION['guestuserid'])) {
-    // Retrieve guestuserid from session
     $guestuserid = $_SESSION['guestuserid'];
 
     include './src/config/config.php';
@@ -16,14 +15,14 @@ if (isset($_SESSION['guestuserid'])) {
     $bookingCartData = array();
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $bookingCartData[] = $row; // Push each row into the array
+            $bookingCartData[] = $row;
         }
     }
 
     $stmt->close();
     $conn->close();
 
-    echo json_encode($bookingCartData); // Encode all data as JSON
+    echo json_encode($bookingCartData);
 } else {
     echo "Guest user ID not found in session.";
 }

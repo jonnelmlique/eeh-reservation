@@ -28,27 +28,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $storedPassword = $row['password'];
 
                 if (password_verify($password, $storedPassword)) {
-
                     $_SESSION['userid'] = $row['userid'];
                     $_SESSION['usertype'] = $row['usertype'];
                     $_SESSION['email'] = $row['email'];
                     $_SESSION['username'] = $row['username'];
 
-                    if ($row['usertype'] == 'admin') {
+                    if ($_SESSION['usertype'] == 'admin') {
                         header("Location: ../admin/dashboard.php");
-                        exit();
-                    } elseif ($row['usertype'] == 'supplier') {
-                        header("Location: ../supplier/dashboard.php");
-                        exit();
                     } else {
                         header("Location: ../index.php");
-                        exit();
                     }
+                    exit();
                 } else {
-                    $message = "Incorrect password.";
+                    $message = "Incorrect password or email.";
                 }
-            } else {
-                $message = "Email not found.";
             }
             $stmt->close();
         }
@@ -100,9 +93,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <a href="dashboard.php"
                             class="btn btn-outline-primary w-100 d-block text-uppercase rounded">Login</a> -->
                     <hr />
-                    <a href="register.php"
+                    <!-- <a href="register.php"
                         class="btn btn-primary w-100 d-block text-uppercase rounded border-primary mt-4 border-3">Create
-                        Account</a>
+                        Account</a> -->
                     <a href="forgot.php"
                         class="btn btn-danger w-100 d-block text-uppercase rounded border-danger mt-4 mb-2 border-3">Forget
                         Password</a>

@@ -88,35 +88,41 @@ if (isset($_SESSION['guestuserid'])) {
                             <div class="row">
                                 <div class="col-3">
                                     <input type="text" class="form-control" name="prefix" placeholder="Prefix"
-                                        value="<?php echo isset($_SESSION['guest_details']['prefix']) ? $_SESSION['guest_details']['prefix'] : ''; ?>" />
+                                        value="<?php echo isset($_SESSION['guest_details']['prefix']) ? $_SESSION['guest_details']['prefix'] : ''; ?>"
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" />
+
                                 </div>
                                 <div class="col-3">
                                     <input type="text" class="form-control" name="first_name" placeholder="First Name"
                                         value="<?php echo isset($_SESSION['guest_details']['firstname']) ? $_SESSION['guest_details']['firstname'] : ''; ?>"
-                                        required />
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" required />
 
 
                                 </div>
                                 <div class="col-3">
                                     <input type="text" class="form-control" name="last_name" placeholder="Last Name"
                                         value="<?php echo isset($_SESSION['guest_details']['lastname']) ? $_SESSION['guest_details']['lastname'] : ''; ?>"
-                                        required />
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" required />
 
 
                                 </div>
                                 <div class="col-3">
                                     <input type="text" class="form-control" name="suffix" placeholder="Suffix"
-                                        value="<?php echo isset($_SESSION['guest_details']['suffix']) ? $_SESSION['guest_details']['suffix'] : ''; ?>" />
+                                        value="<?php echo isset($_SESSION['guest_details']['suffix']) ? $_SESSION['guest_details']['suffix'] : ''; ?>"
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" />
 
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col-6">
-                                    <input type="number" class="form-control" name="mobile_number"
+                                    <input type="text" class="form-control" name="mobile_number"
                                         placeholder="Mobile Number"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)"
+                                        maxlength="11"
                                         value="<?php echo isset($_SESSION['guest_details']['mobilenumber']) ? $_SESSION['guest_details']['mobilenumber'] : ''; ?>"
                                         required />
+
 
 
                                 </div>
@@ -136,7 +142,7 @@ if (isset($_SESSION['guestuserid'])) {
                                 <div class="col-4">
                                     <input type="text" class="form-control" name="country" placeholder="Country"
                                         value="<?php echo isset($_SESSION['guest_details']['country']) ? $_SESSION['guest_details']['country'] : ''; ?>"
-                                        required />
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" required />
 
 
                                 </div>
@@ -153,11 +159,12 @@ if (isset($_SESSION['guestuserid'])) {
                                 <div class="col-8">
                                     <input type="text" class="form-control" name="city" placeholder="City"
                                         value="<?php echo isset($_SESSION['guest_details']['city']) ? $_SESSION['guest_details']['city'] : ''; ?>"
-                                        required />
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')" required />
 
                                 </div>
                                 <div class="col-4">
-                                    <input type="number" class="form-control" name="zip" placeholder="Zip Postal Code"
+                                    <input type="text" class="form-control" name="zip" placeholder="Zip Postal Code"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                         value="<?php echo isset($_SESSION['guest_details']['zipcode']) ? $_SESSION['guest_details']['zipcode'] : ''; ?>"
                                         required />
 
@@ -167,7 +174,11 @@ if (isset($_SESSION['guestuserid'])) {
 
                     </div>
                     <button type="submit" class="btn continue-btn w-100 text-uppercase"
-                        style="border-radius: 8px; margin-top: 15px;">Continue to Book</button>
+                        style="border-radius: 8px; margin-top: 15px; background-color: #D4AF37; color: #fff; border-color: #D4AF37; transition: background-color 0.3s;"
+                        onmouseover="this.style.backgroundColor='#6e5b1d'; this.style.borderColor='#6e5b1d';"
+                        onmouseout="this.style.backgroundColor='#D4AF37'; this.style.borderColor='#D4AF37';">Continue to
+                        Book</button>
+
                     </form>
                 </div>
 

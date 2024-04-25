@@ -8,7 +8,7 @@ require '../src/contact/Exception.php';
 require '../src/contact/PHPMailer.php';
 require '../src/contact/SMTP.php';
 
-$defaultUserType = 'customer';
+$defaultUserType = 'admin';
 $message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

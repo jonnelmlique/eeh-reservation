@@ -1,4 +1,7 @@
 <?php
+
+include './src/config/config.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -11,9 +14,8 @@ if (
     isset($_POST['adults']) && isset($_POST['children']) && isset($_POST['checkindates']) &&
     isset($_POST['checkintimes']) && isset($_POST['checkoutdates']) && isset($_POST['checkouttimes']) &&
     isset($_POST['prices']) && isset($_POST['reservationprices']) && isset($_POST['totalreservationprice']) &&
-    isset($_POST['paymentMethod'])
+    isset($_POST['paymentMethod']) && isset($_POST['totalafterpromo'])
 ) {
-    include_once './src/config/config.php';
 
     $transactionID = mysqli_real_escape_string($conn, $_POST['transactionID']);
     $roomids = mysqli_real_escape_string($conn, $_POST['roomids']);
@@ -32,15 +34,21 @@ if (
     $reservationprices = mysqli_real_escape_string($conn, $_POST['reservationprices']);
     $totalreservationprice = mysqli_real_escape_string($conn, $_POST['totalreservationprice']);
     $paymentMethod = mysqli_real_escape_string($conn, $_POST['paymentMethod']);
+    $totalafterpromo = mysqli_real_escape_string($conn, $_POST['totalafterpromo']);
 
-    // Check if roomnumber is unique
-    // Check if roomnumber already exists
-    $sql_check_roomnumber = "SELECT roomnumber FROM reservationprocess WHERE roomnumber = '$roomnumber'";
-    $result_check_roomnumber = mysqli_query($conn, $sql_check_roomnumber);
-    if (mysqli_num_rows($result_check_roomnumber) > 0) {
-        echo "Error: Room number already exists.";
-        exit();
+    $gcashNumber = '';
+    $referenceNo = '';
+
+    if ($paymentMethod === "gcashqr") {
+        if (isset($_POST['gcashNumber'])) {
+            $gcashNumber = mysqli_real_escape_string($conn, $_POST['gcashNumber']);
+        }
+        if (isset($_POST['referenceNo'])) {
+            $referenceNo = mysqli_real_escape_string($conn, $_POST['referenceNo']);
+        }
     }
+
+
 
     $sql_guest = "SELECT prefix, firstname, lastname, suffix, mobilenumber, emailaddress, country, address, city, zipcode FROM guestdetails WHERE guestuserid = '$guestuserid'";
     $result_guest = mysqli_query($conn, $sql_guest);
@@ -70,10 +78,8 @@ if (
     $pricesArray = explode(',', $prices);
     $reservationpricesArray = explode(',', $reservationprices);
 
-    // Construct the SQL query
-    $sql = "INSERT INTO reservationprocess (transactionid, roomid, guestuserid, roomfloor, roomnumber, adults, children, checkindate, checkintime, checkoutdate, checkouttime, price, reservationprice, totalreservationprice, prefix, firstname, lastname, suffix, mobilenumber, emailaddress, country, address, city, zipcode, status, paymentmethod) VALUES ";
+    $sql = "INSERT INTO reservationprocess (transactionid, roomid, guestuserid, roomfloor, roomnumber, adults, children, checkindate, checkintime, checkoutdate, checkouttime, price, reservationprice, totalreservationprice, prefix, firstname, lastname, suffix, mobilenumber, emailaddress, country, address, city, zipcode, status, paymentmethod, gcashNumber, referenceNo, totalafterpromo) VALUES ";
 
-    // Iterate over each room and add values to the query
     for ($i = 0; $i < count($roomidsArray); $i++) {
         $roomid = isset($roomidsArray[$i]) ? mysqli_real_escape_string($conn, $roomidsArray[$i]) : '';
         $roomfloor = isset($roomfloorArray[$i]) ? mysqli_real_escape_string($conn, $roomfloorArray[$i]) : '';
@@ -88,24 +94,20 @@ if (
         $price = isset($pricesArray[$i]) ? mysqli_real_escape_string($conn, $pricesArray[$i]) : '';
         $reservationprice = isset($reservationpricesArray[$i]) ? mysqli_real_escape_string($conn, $reservationpricesArray[$i]) : '';
 
-        // Add values to the query
-        $sql .= "('$transactionID', '$roomid', '$guestuserid', '$roomfloor', '$roomnumber', '$adult', '$child', '$checkindate', '$checkintime', '$checkoutdate', '$checkouttime', '$price', '$reservationprice', '$totalreservationprice', '$prefix', '$firstname', '$lastname', '$suffix', '$mobilenumber', '$emailaddress', '$country', '$address', '$city', '$zipcode', 'Pending', '$paymentMethod'),";
+
+        $sql .= "('$transactionID', '$roomid', '$guestuserid', '$roomfloor', '$roomnumber', '$adult', '$child', '$checkindate', '$checkintime', '$checkoutdate', '$checkouttime', '$price', '$reservationprice', '$totalreservationprice', '$prefix', '$firstname', '$lastname', '$suffix', '$mobilenumber', '$emailaddress', '$country', '$address', '$city', '$zipcode', 'Pending', '$paymentMethod',  '$gcashNumber', '$referenceNo', '$totalafterpromo'),";
     }
 
-    // Remove the trailing comma from the query
     $sql = rtrim($sql, ',');
 
-    // Execute the SQL query
     if (mysqli_query($conn, $sql)) {
 
-        // Update room status to Reserved for each booked room
-        for ($i = 0; $i < count($roomnumberArray); $i++) {
-            $roomnumber = mysqli_real_escape_string($conn, $roomnumberArray[$i]);
+        // for ($i = 0; $i < count($roomnumberArray); $i++) {
+        //     $roomnumber = mysqli_real_escape_string($conn, $roomnumberArray[$i]);
 
-            // Construct and execute the SQL update statement
-            $sql_update_room_status = "UPDATE roominfo SET status = 'Reserved' WHERE roomnumber = '$roomnumber'";
-            mysqli_query($conn, $sql_update_room_status);
-        }
+        //     $sql_update_room_status = "UPDATE roominfo SET status = 'Reserved' WHERE roomnumber = '$roomnumber'";
+        //     mysqli_query($conn, $sql_update_room_status);
+        // }
 
         $sql_delete_guest = "DELETE FROM guestdetails WHERE guestuserid = '$guestuserid'";
         $sql_delete_bookingcart = "DELETE FROM reservationsummary WHERE guestuserid = '$guestuserid'";
@@ -116,23 +118,28 @@ if (
         try {
             $mail = new PHPMailer(true);
 
-            // Configure PHPMailer settings here
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'enchantedescapescontact@gmail.com'; // Your Gmail username
-            $mail->Password = 'mqgqeokllxumgpzu'; // Your Gmail password
+            $mail->Username = 'enchantedescapescontact@gmail.com';
+            $mail->Password = 'mqgqeokllxumgpzu';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
-            $mail->setFrom('enchantedescapescontact@gmail.com', 'Your Name');
-            $mail->addAddress($emailaddress); // Use the user's email address
+            $mail->setFrom('enchantedescapescontact@gmail.com', 'Enchanted Escapes');
+            $mail->addAddress($emailaddress);
             $mail->isHTML(true);
 
-            $mail->Subject = 'Booking Confirmation';
-            $mail->Body = 'Hello ' . $firstname . ',<br><br>Your booking has been confirmed. Thank you for choosing our service.<br><br>' .
-                'Transaction ID: ' . $transactionID . '<br>' .
-                'Room ID: ' . $roomids . '<br>' .
+            $sql_status = "SELECT status FROM reservationprocess WHERE transactionid = '$transactionID'";
+            $result_status = mysqli_query($conn, $sql_status);
+            $row_status = mysqli_fetch_assoc($result_status);
+            $status = $row_status['status'];
+            $formattedTotal = '₱' . number_format($totalafterpromo, 2);
+
+            $mail->Subject = 'Reservation Confirmation';
+            $mail->Body = 'Hello ' . $firstname . ' ' . $lastname . ',<br><br>Your booking has been confirmed. Thank you for choosing our service.<br><br>' .
+                'Transaction ID: <a href="http://localhost/eeh-reservation/reservationstatusdetails.php?transactionid=' . $transactionID . '">' . $transactionID . '</a><br>' .
+
                 'Room Floor: ' . $roomfloor . '<br>' .
                 'Room Number: ' . $roomnumber . '<br>' .
                 'Adults: ' . $adults . '<br>' .
@@ -141,38 +148,199 @@ if (
                 'Check-in Time: ' . $checkintimes . '<br>' .
                 'Checkout Date: ' . $checkoutdates . '<br>' .
                 'Checkout Time: ' . $checkouttimes . '<br>' .
-                'Price: ' . $prices . '<br>' .
-                'Reservation Price: ' . $reservationprices . '<br>' .
-                'Total Reservation Price: ' . $totalreservationprice . '<br>' .
-                'Prefix: ' . $prefix . '<br>' .
-                'First Name: ' . $firstname . '<br>' .
-                'Last Name: ' . $lastname . '<br>' .
-                'Suffix: ' . $suffix . '<br>' .
+
+                'Total Reservation Price: ' . $formattedTotal . '<br><br>' .
+                'Name: ' . $prefix . ' ' . $firstname . ' ' . $lastname . ' ' . $suffix . '<br>' .
                 'Mobile Number: ' . $mobilenumber . '<br>' .
                 'Email Address: ' . $emailaddress . '<br>' .
                 'Country: ' . $country . '<br>' .
                 'Address: ' . $address . '<br>' .
                 'City: ' . $city . '<br>' .
-                'Zipcode: ' . $zipcode . '<br>' .
-                'Payment Method: ' . $paymentMethod . '<br>';
+                'Zipcode: ' . $zipcode . '<br><br>' .
+                'Transaction ID: ' . $transactionID . '<br>' .
+                'Payment Method: ' . $paymentMethod . '<br>' .
+                'Status: ' . $status . '<br>';
+            if ($paymentMethod === "gcashqr") {
+                $mail->Body .= 'GCash Number: ' . $gcashNumber . '<br>';
+                $mail->Body .= 'Reference No: ' . $referenceNo . '<br>';
+            }
 
-            // Send the email
+            $termsAndConditions = '
+<div class="container">
+    <div>
+        <h4 class="fw-bold text-uppercase" data-toggle="collapse" href="#termsCollapse"
+            role="button" aria-expanded="false" aria-controls="termsCollapse">ENCHANTED ESCAPES
+            HOTEL | TERMS AND CONDITIONS</h4>
+        <div class="container">
+            <p><strong>Condition of Stay</strong></p>
+            <p>The following terms and conditions will apply to all bookings at the Enchanted
+                Escapes Hotel. Guests
+                are asked to read these terms and conditions carefully before making a booking,
+                paying particular
+                attention to the deposit and cancellation policies, as well as any other terms
+                and conditions marked
+                in bold. In these terms and conditions: "Agreement" means the booking
+                confirmation read together
+                with these Terms & Conditions. "Guest" means the person who will be accommodated
+                at the Hotel.
+                "Hotel" means the Enchanted Escapes Hotel. "Terms & Conditions" means the terms
+                and conditions of
+                stay. These terms and conditions apply to all bookings made at the Enchanted
+                Escapes Hotel.</p>
+        </div>
+        <div>
+            <h4 class="fw-bold text-uppercase" data-toggle="collapse" href="#bookingCollapse"
+                role="button" aria-expanded="false" aria-controls="bookingCollapse">Booking
+                Procedure </h4>
+            <div class="container collapse" id="bookingCollapse">
+                <ol>
+                    <li>Upon securing the booking, guests will receive a written confirmation
+                        through one of the following
+                        methods:
+                        <ol type="a">
+                            <li>Payment of a deposit</li>
+                            <li>Presentation of a billing voucher (for bookings made through a
+                                travel agent or tour operator)</li>
+                        </ol>
+                    </li>
+                    <li>When making abooking, guests are required to provide the following
+                        information to the Hotel:
+                        <ol type="a">
+                            <li>Full name and contact details</li>
+                            <li>Requested dates of stay and estimated time of arrival</li>
+                            <li>Accommodation fees based on the Hotel\'s published rates</li>
+                            <li>Any additional information deemed necessary by the Hotel</li>
+                        </ol>
+                    </li>
+                    <li>If a guest wishes to extend their stay, a new accommodation agreement
+                        will be established upon the
+                        submission of the request.</li>
+                    <li>The accommodation agreement is considered valid once the Hotel accepts
+                        the booking unless the Hotel can
+                        prove otherwise.</li>
+                    <li>Once the accommodation agreement is established, the guest must make a
+                        deposit payment by the specified
+                        deadline set by the Hotel. This deposit will be applied towards the
+                        total charges payable by the
+                        guest.</li>
+                    <li>Failure to pay the required deposit by the specified deadline, unless
+                        the Hotel has provided an alternative
+                        notification, will result in the termination of the accommodation
+                        agreement.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="collapse show" id="termsCollapse">
+        <p><strong>Charges, Deposit, and Payment</strong></p>
+        <ol>
+            <li>Prices quoted by Enchanted Escapes Hotel include VAT. Price lists
+                for additional items, such as room
+                service and restaurant meals, can be obtained upon request or are
+                displayed at relevant locations within
+                the hotel.</li>
+            <li>All charges incurred during a guest\'s stay can be settled
+                immediately or charged to the guest\'s room
+                account. If charges are debited to the room account, the full
+                balance must be settled upon check-out when
+                presenting the invoice.</li>
+            <li>Bookings must be secured using one of the following methods:
+                <ol type="a">
+                    <li>Payment of a percentage of the total accommodation costs
+                    </li>
+                </ol>
+            </li>
+            <li>Payment can be made through the following methods:
+                <ol type="a">
+                    <li>Electronic funds transfer into the bank account specified on
+                        the proforma invoice</li>
+                </ol>
+            </li>
+            <li>Failure to pay the required deposit or present a billing voucher by
+                the due date may result in the hotel
+                treating the booking as canceled without further notice.</li>
+            <li>The hotel reserves the right to accept payment only in the
+                currencies it has specified to guests. Prior
+                notice may be given if the hotel does not accept certain currencies.
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="container">
+    <div class="collapse show" id="termsCollapse">
+        <p><strong>Cancellations and Non-Arrivals</strong></p>
+        <p>Cancellations are required to be submitted in writing. Guests are
+            responsible for the payment of a cancellation fee, which will be
+            determined by Enchanted Escapes Hotel at the time of booking
+            confirmation. Please note that changes to rooms, including switching
+            rooms, are not permitted. Should you have any inquiries or requests
+            related to cancellations and refunds, we kindly ask that you reach out
+            to us through the provided contact information. </p>
+    </div>
+</div>
+<div class="container">
+    <div class="collapse show" id="termsCollapse">
+        <p><strong>Changes to Bookings </strong></p>
+        <ol>
+            <li>Changes to any bookings must be made in writing. </li>
+            <li>No amendments are guaranteed until written confirmation is provided by
+                Enchanted Escapes Hotel. </li>
+            <li>Rate variations may apply, depending on the nature of the change
+                requested</li>
+
+        </ol>
+    </div>
+</div>
+';
+
+            $mail->Body .= $termsAndConditions;
+
+
             $mail->send();
         } catch (Exception $e) {
             echo "Error sending email: " . $e->getMessage();
         }
 
+
         echo "Booking information inserted successfully.";
+
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
 
-    // Close the database connection
     mysqli_close($conn);
 } else {
-    echo "Error: Some required fields are not set.";
+
+    echo "Error: Some required fields are not set. <br>";
+    echo "Missing fields:<br>";
+    $required_fields = array(
+        'transactionID',
+        'roomids',
+        'guestuserid',
+        'roomfloor',
+        'roomnumber',
+        'adults',
+        'children',
+        'checkindates',
+        'checkintimes',
+        'checkoutdates',
+        'checkouttimes',
+        'prices',
+        'reservationprices',
+        'totalreservationprice',
+        'paymentMethod',
+        'gcashNumber',
+        'referenceNo',
+        'totalafterpromo'
+    );
+    foreach ($required_fields as $field) {
+        if (!isset($_POST[$field])) {
+            echo "$field is missing <br>";
+        }
+    }
 }
+
+
 ?>
-<script>
-    // JavaScript code remains unchanged
-</script>

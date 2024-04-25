@@ -21,9 +21,11 @@
                 <ul
                     class="navbar-nav me-auto mb-2 mb-lg-0 d-md-flex d-block flex-row mx-md-auto mx-0 text-uppercase custom-margin">
                     <li class="nav-item"><a class="nav-link" href="./index.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="./rooms.php">Rooms</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contacts</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./about.php">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./book-now.php">Rooms</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./contact.php">Contacts</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./reservationstatus.php">Status</a></li>
+
                 </ul>
                 <div class="navbar-icons d-flex align-items-center">
                     <a href="./auth/login.php" class="nav-link"><i class="fas fa-user"></i> Login </a>
