@@ -2,6 +2,10 @@
 include '../src/config/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Debugging: Print the received data
+    echo "Received data: ";
+    print_r($_POST);
+
     $stmt = $conn->prepare("INSERT INTO hrusers (name, userrole, status) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $name, $userrole, $status);
 

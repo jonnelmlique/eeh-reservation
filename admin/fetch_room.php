@@ -1,12 +1,8 @@
 <?php
-// Include the database connection file
 include "../src/config/config.php";
 
-// Check if room_id is set and is a valid integer
 if (isset($_POST['room_id']) && filter_var($_POST['room_id'], FILTER_VALIDATE_INT)) {
-    // Check if the request is for fetching room information or updating room information
     if (isset($_POST['action']) && $_POST['action'] === 'update') {
-        // Fetch existing room information
         $room_id = $_POST['room_id'];
         $query = "SELECT * FROM room WHERE roomid = ?";
         $stmt = $conn->prepare($query);
@@ -18,7 +14,6 @@ if (isset($_POST['room_id']) && filter_var($_POST['room_id'], FILTER_VALIDATE_IN
                 if ($result->num_rows > 0) {
                     $existing_room = $result->fetch_assoc();
 
-                    // Compare existing room information with new information
                     $room_type = $_POST['room_type'];
                     $room_inc = $_POST['room_inc'];
                     $beds_available = $_POST['beds_available'];
@@ -50,24 +45,18 @@ if (isset($_POST['room_id']) && filter_var($_POST['room_id'], FILTER_VALIDATE_IN
                         'status' => $status
                     );
 
-                    // Check if there are changes
                     if ($existing_info === $new_info) {
                         echo json_encode(array('success' => 'No changes detected.'));
                         exit();
                     }
 
-                    // Update room information
                     $query = "UPDATE room SET roomtype=?, roominclusion=?, bedsavailable=?, maxoccupancy=?, deposit=?, price=?, reservationprice=?, status=?";
                     $params = "sssiidds";
                     $param_values = array($room_type, $room_inc, $beds_available, $max_occupancy, $deposit, $price, $reservation_price, $status);
 
-                    // Check if a new image file is uploaded...
-                    // Rest of your existing code for handling image upload
-
-                    // Add room_id to param_values array
+                 
                     $param_values[] = $room_id;
 
-                    // Prepare and execute the update query
                     $stmt = $conn->prepare($query . " WHERE roomid=?");
                     if ($stmt) {
                         $stmt->bind_param($params . "i", ...$param_values);

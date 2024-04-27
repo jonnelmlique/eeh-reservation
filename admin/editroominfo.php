@@ -1,6 +1,13 @@
 <?php
-include '../src/config/config.php';
 session_start();
+
+if (!isset($_SESSION['userid'])) {
+    header("Location: ../auth/login.php");
+    exit(); 
+}
+?>
+<?php
+include '../src/config/config.php';
 
 $room_data = [];
 

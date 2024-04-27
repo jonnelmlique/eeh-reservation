@@ -137,34 +137,37 @@ if (
             $formattedTotal = '₱' . number_format($totalafterpromo, 2);
 
             $mail->Subject = 'Reservation Confirmation';
-            $mail->Body = 'Hello ' . $firstname . ' ' . $lastname . ',<br><br>Your booking has been confirmed. Thank you for choosing our service.<br><br>' .
-                'Transaction ID: <a href="http://localhost/eeh-reservation/reservationstatusdetails.php?transactionid=' . $transactionID . '">' . $transactionID . '</a><br>' .
-
-                'Room Floor: ' . $roomfloor . '<br>' .
-                'Room Number: ' . $roomnumber . '<br>' .
-                'Adults: ' . $adults . '<br>' .
-                'Children: ' . $children . '<br>' .
-                'Check-in Date: ' . $checkindates . '<br>' .
-                'Check-in Time: ' . $checkintimes . '<br>' .
-                'Checkout Date: ' . $checkoutdates . '<br>' .
-                'Checkout Time: ' . $checkouttimes . '<br>' .
-
-                'Total Reservation Price: ' . $formattedTotal . '<br><br>' .
-                'Name: ' . $prefix . ' ' . $firstname . ' ' . $lastname . ' ' . $suffix . '<br>' .
-                'Mobile Number: ' . $mobilenumber . '<br>' .
-                'Email Address: ' . $emailaddress . '<br>' .
-                'Country: ' . $country . '<br>' .
-                'Address: ' . $address . '<br>' .
-                'City: ' . $city . '<br>' .
-                'Zipcode: ' . $zipcode . '<br><br>' .
-                'Transaction ID: ' . $transactionID . '<br>' .
-                'Payment Method: ' . $paymentMethod . '<br>' .
-                'Status: ' . $status . '<br>';
+            $mail->Body = '
+           
+                <div class="container">
+                    <p>Hello ' . $firstname . ' ' . $lastname . ',</p>
+                    <p>Your booking has been confirmed. Thank you for choosing our service.</p>
+                    <p>Here are your reservation details:</p>
+                    <ul>
+                        <li>Room Floor: ' . $roomfloor . '</li>
+                        <li>Room Number: ' . $roomnumber . '</li>
+                        <li>Adults: ' . $adults . '</li>
+                        <li>Children: ' . $children . '</li>
+                        <li>Check-in Date: ' . $checkindates . '</li>
+                        <li>Check-in Time: ' . $checkintimes . '</li>
+                        <li>Checkout Date: ' . $checkoutdates . '</li>
+                        <li>Checkout Time: ' . $checkouttimes . '</li>
+                        <li>Total Reservation Price: ' . $formattedTotal . '</li><br>
+                        <li>Name: ' . $prefix . ' ' . $firstname . ' ' . $lastname . ' ' . $suffix . '</li>
+                        <li>Mobile Number: ' . $mobilenumber . '</li>
+                        <li>Email Address: ' . $emailaddress . '</li>
+                        <li>Country: ' . $country . '</li>
+                        <li>Address: ' . $address . '</li>
+                        <li>City: ' . $city . '</li>
+                        <li>Zipcode: ' . $zipcode . '</li><br>
+                        
+                        <li>Transaction ID: <a href="http://localhost/eeh-reservation/reservationstatusdetails.php?transactionid=' . $transactionID . '">' . $transactionID . '</a></li>
+                        <li>Payment Method: ' . $paymentMethod . '</li>
+                        <li>Status: ' . $status . '</li>';
             if ($paymentMethod === "gcashqr") {
-                $mail->Body .= 'GCash Number: ' . $gcashNumber . '<br>';
-                $mail->Body .= 'Reference No: ' . $referenceNo . '<br>';
+                $mail->Body .= '<li>GCash Number: ' . $gcashNumber . '</li>';
+                $mail->Body .= '<li>Reference No: ' . $referenceNo . '</li>';
             }
-
             $termsAndConditions = '
 <div class="container">
     <div>

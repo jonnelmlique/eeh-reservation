@@ -470,7 +470,7 @@ if (isset($_SESSION['guestuserid'])) {
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn continue-btn" id="gcash-proceed">Continue</button>
+                <button type="button" class="btn btn-primary" id="gcash-proceed">Continue</button>
             </div>
 
         </div>

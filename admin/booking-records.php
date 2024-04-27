@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['userid'])) {
+    header("Location: ../auth/login.php");
+    exit(); 
+}
+?>
 <!DOCTYPE html>
 
 <head>
@@ -29,7 +37,7 @@
                 <br />
 
                 <div align="right">
-                    <input type="search" class="form-control w-auto" name="search" placeholder="Search"
+                    <input type="search" class="form-control w-100px" name="search" placeholder="Search"
                         style="border-radius: 8px" id="searchInput" />
                 </div>
                 <br />
@@ -158,23 +166,23 @@
     <script src="../scripts/bootstrap.bundle.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            $('#searchInput').on('keyup', function () {
-                var searchText = $(this).val().trim();
-                if (searchText !== '') {
-                    $.ajax({
-                        url: 'searchrecords.php',
-                        type: 'post',
-                        data: {
-                            search: searchText
-                        },
-                        success: function (response) {
-                            $('#roomreservation tbody').html(response);
-                        }
-                    });
-                }
-            });
+    $(document).ready(function() {
+        $('#searchInput').on('keyup', function() {
+            var searchText = $(this).val().trim();
+            if (searchText !== '') {
+                $.ajax({
+                    url: 'searchrecords.php',
+                    type: 'post',
+                    data: {
+                        search: searchText
+                    },
+                    success: function(response) {
+                        $('#roomreservation tbody').html(response);
+                    }
+                });
+            }
         });
+    });
     </script>
 </body>
 

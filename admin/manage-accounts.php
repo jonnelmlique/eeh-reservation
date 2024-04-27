@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['userid'])) {
+    header("Location: ../auth/login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 
 <head>
@@ -28,10 +36,11 @@
                 <br />
 
                 <div align="right">
-                    <input type="search" class="form-control w-auto" name="search" placeholder="Search"
+                    <input type="search" class="form-control w-100px" name="search" placeholder="Search"
                         style="border-radius: 8px" id="searchInput" />
 
                 </div>
+                <br>
                 <button class="btn btn-primary text-uppercase px-4" data-bs-toggle="modal"
                     data-bs-target="#addModal">Add</button>
                 <br>
@@ -45,7 +54,7 @@
                             <td class="bg-dark text-white">Name</td>
                             <td class="bg-dark text-white">User Role</td>
                             <td class="bg-dark text-white">Status</td>
-                            <!-- <td class="bg-dark text-white">Action</td> -->
+                            <td class="bg-dark text-white">Action</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,7 +71,7 @@
                                 echo "<td class='fw-bold'>" . $row['name'] . "</td>";
                                 echo "<td>" . $row['userrole'] . "</td>";
                                 echo "<td class='text-" . ($row['status'] == 'Active' ? 'success' : 'danger') . " text-uppercase'>" . $row['status'] . "</td>";
-                                // echo "<td><button class='btn btn-success w-100' data-bs-toggle='modal' data-bs-target='#editModal'>Edit</button></td>";
+                                echo "<td><button class='btn btn-success w-100' data-bs-toggle='modal' data-bs-target='#editModal'>Edit</button></td>";
                                 echo "</tr>";
                             }
                         } else {
@@ -86,6 +95,8 @@
                     <h5 class="modal-title fw-bold">Edit User</h5>
                 </div>
                 <div class="modal-body" align="center">
+                    <input type="hidden" name="hruserid" value="<?php echo $row['hruserid']; ?>">
+
                     <div class="row">
                         <div class="col-4" align="right">
                             <p class="mt-2">Name</p>
@@ -99,7 +110,8 @@
                             <p class="mt-2">User Role</p>
                         </div>
                         <div class="col-8"><input type="text" class="form-control" name="edit-user-role"
-                                style="border-radius: 8px" placeholder="User Role" /></div>
+                                style="border-radius: 8px" placeholder="User Role" />
+                        </div>
                     </div>
 
                     <div class="row mt-1">
@@ -229,6 +241,65 @@
     });
     </script>
 
+    <script>
+    $(document).ready(function() {
+        $('tbody').on('click', 'tr', function() {
+            var rowData = $(this).children("td").map(function() {
+                return $(this).text();
+            }).get();
+
+            $('[name="edit-name"]').val(rowData[1]);
+            $('[name="edit-user-role"]').val(rowData[2]);
+            $('[name="edit-status"]').val(rowData[3].toLowerCase());
+
+            var hruserid = $(this).find("td:first").text();
+            $('[name="hruserid"]').val(hruserid);
+
+            $('#editModal').modal('show');
+        });
+
+        $('.continue-btn').click(function() {
+            var name = $('[name="edit-name"]').val();
+            var userRole = $('[name="edit-user-role"]').val();
+            var status = $('[name="edit-status"]').val();
+            var hruserid = $('[name="hruserid"]').val();
+
+            $.ajax({
+                url: 'updatehruser.php',
+                type: 'POST',
+                data: {
+                    name: name,
+                    userRole: userRole,
+                    status: status,
+                    hruserid: hruserid
+                },
+                success: function(response) {
+                    console.log(response);
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'User information updated successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: xhr.responseText,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+    });
+    </script>
 
 
 </body>

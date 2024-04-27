@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['userid'])) {
+    header("Location: ../auth/login.php");
+    exit(); 
+}
+?>
 <!DOCTYPE html>
 
 <head>
@@ -130,58 +138,48 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <script>
-            $(document).ready(function () {
-                $("#addModal form").submit(function (e) {
-                    e.preventDefault();
-                    var formData = new FormData($(this)[0]);
+        $(document).ready(function() {
+            $("#addModal form").submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData($(this)[0]);
 
-                    $.ajax({
-                        url: "addroomi.php",
-                        type: "POST",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function (response) {
-                            console.log("Response:", response);
+                $.ajax({
+                    url: "addroomi.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log("Response:", response);
 
-                            try {
-                                if (response.message === "success") {
-                                    Swal.fire({
-                                        title: 'Room Info Added Successfully!',
-                                        text: 'You have successfully added the Room Info.',
-                                        icon: 'success',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'OK',
-                                        cancelButtonText: 'View Room Info'
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            location.reload();
-                                        } else if (result.dismiss === Swal.DismissReason
-                                            .cancel) {
-                                            window.location.href =
-                                                '../admin/addroominfo.php';
-                                        }
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: 'Error',
-                                        text: response.message,
-                                        icon: 'error',
-                                        confirmButtonText: 'OK'
-                                    });
-                                }
-                            } catch (error) {
-                                console.error("Error parsing JSON:", error);
+                        try {
+                            if (response.message === "success") {
+                                Swal.fire({
+                                    title: 'Room Info Added Successfully!',
+                                    text: 'You have successfully added the Room Info.',
+                                    icon: 'success',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'OK',
+                                    cancelButtonText: 'View Room Info'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    } else if (result.dismiss === Swal.DismissReason
+                                        .cancel) {
+                                        window.location.href =
+                                            '../admin/addroominfo.php';
+                                    }
+                                });
+                            } else {
                                 Swal.fire({
                                     title: 'Error',
-                                    text: 'An unexpected error occurred.',
+                                    text: response.message,
                                     icon: 'error',
                                     confirmButtonText: 'OK'
                                 });
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error:', xhr.responseText);
+                        } catch (error) {
+                            console.error("Error parsing JSON:", error);
                             Swal.fire({
                                 title: 'Error',
                                 text: 'An unexpected error occurred.',
@@ -189,9 +187,19 @@
                                 confirmButtonText: 'OK'
                             });
                         }
-                    });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An unexpected error occurred.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
             });
+        });
         </script>
 
 

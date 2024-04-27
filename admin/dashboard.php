@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['userid'])) {
+    header("Location: ../auth/login.php");
+    exit(); 
+}
+?>
+<?php
 include '../src/config/config.php';
 
 // Initialize variables
