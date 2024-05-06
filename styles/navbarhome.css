@@ -12,7 +12,7 @@ body {
   padding-right: 5px;
   margin-left: 20px;
 }
-.navbar-icons a.nav-link {
+.nav-links {
   color: #ffffff;
   margin-right: 120px;
   transition: color 0.3s;

@@ -27,9 +27,9 @@
                     <li class="nav-item"><a class="nav-link" href="../reservationstatus.php">Status</a></li>
 
                 </ul>
-                <div class="navbar-icons d-flex align-items-center">
+                <!-- <div class="navbar-icons d-flex align-items-center">
                     <a href="../auth/login.php" class="nav-link"><i class="fas fa-user"></i> Login </a>
-                </div>
+                </div> -->
             </div>
 
         </div>

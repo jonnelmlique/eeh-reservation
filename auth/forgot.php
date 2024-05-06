@@ -86,7 +86,6 @@ $conn->close();
 </head>
 
 <body>
-    <?php include ("../components/navbar.php"); ?>
 
     <div class="row entrance">
         <div class="col-8">

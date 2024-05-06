@@ -4,7 +4,7 @@ body {
 }
 .custom-margin {
   font-weight: bold;
-font-size: 17px;
+  font-size: 17px;
 }
 .bold-text {
   font-weight: bold;
@@ -14,7 +14,7 @@ font-size: 17px;
 }
 .navbar-icons a.nav-link {
   color: #ffffff;
-  margin-right: 120px;
+  margin-right: 190px;
   transition: color 0.3s;
 }
 .navbar-icons a.nav-link:hover,

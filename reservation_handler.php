@@ -4,7 +4,7 @@ session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $required_fields = ['roomid', 'floorSelect', 'roomNumberSelect', 'add-adults', 'add-children', 'checkInDate', 'checkInTime', 'checkOutDate', 'checkOutTime'];
+    $required_fields = ['roomid', 'floorSelect', 'roomNumberSelect', 'add-adults', 'checkInDate', 'checkInTime', 'checkOutDate', 'checkOutTime'];
     $empty_fields = [];
     foreach ($required_fields as $field) {
         if (empty($_POST[$field])) {

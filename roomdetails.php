@@ -51,7 +51,7 @@
                         echo '</div>';
                         echo '<div class="row">';
                         echo '<div class="col-4"><p class="product-details-description">Children:</p></div>';
-                        echo '<div class="col-8"><input type="number" value="0" class="form-control" name="add-children" id="addChildren" style="border-radius: 8px" placeholder="Children" required min="0" step="1" max=""></div>';
+                        echo '<div class="col-8"><input type="number" value="0" class="form-control" name="add-children" id="addChildren" style="border-radius: 8px" placeholder="Children" required min="0" step="1"></div>';
                         echo '</div>';
                         echo '<label class="checkin" for="checkInDate">Check-in Date & Time:</label>';
                         echo '<input type="date" id="checkInDate" name="checkInDate" required>';

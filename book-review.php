@@ -344,20 +344,30 @@ if (isset($_SESSION['guestuserid'])) {
                                         $totalReservationPrice -= $discountAmount;
                                         $promoId = $promoRow['promoid'];
 
-                                        $updatePromoQuery = "UPDATE eespromo SET available = available - 1 WHERE promoid = $promoId";
-                                        mysqli_query($conn, $updatePromoQuery);
-                                        ;
+                                        if ($promoRow['available'] > 0) {
+
+                                            $updatePromoQuery = "UPDATE eespromo SET available = available - 1 WHERE promoid = $promoId";
+                                            mysqli_query($conn, $updatePromoQuery);
+                                            ;
 
 
-                                        $promoApplied = true;
+                                            $promoApplied = true;
 
 
-                                        echo "<div class='row mx-2 pt-2'>
+                                            echo "<div class='row mx-2 pt-2'>
                         <div class='col-12' align='center'>
                             <b class='text-uppercase'>Promotion Applied:</b><br />
                             <small>$promoName ($promoPercentage% Discount)</small>
                         </div>
                     </div>";
+                                        } else {
+                                            echo "<div class='row mx-2 pt-2'>
+                            <div class='col-12' align='center'>
+                                <b class='text-uppercase text-danger'>Promotion Not Available!</b><br />
+                                <small>The entered promotion code is currently not available or already fully used.</small>
+                                </div>
+                        </div>";
+                                        }
                                     } else {
                                         echo "<div class='row mx-2 pt-2'>
                         <div class='col-12' align='center'>
@@ -438,33 +448,33 @@ if (isset($_SESSION['guestuserid'])) {
             <div class="modal-header">
                 <h5 class="modal-title fw-bold">GCASH QR</h5>
             </div>
-
             <div class="modal-body">
                 <div class="roomdetails" id="roomDetails">
                     <img src="./assets/myQRgcash.png" width="200px" height="300px" style="margin-left: 125px;">
                 </div>
+                <form class="needs-validation">
+                    <div class="row">
+                        <div class="col-4" align="right">
+                            <p class="mt-2">Gcash Number:</p>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" Id="add-gcashnum" class="form-control" name="add-gcashnum"
+                                style="border-radius: 8px" placeholder="Gcahs Number"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)" maxlength="11"
+                                required />
 
-                <div class="row">
-                    <div class="col-4" align="right">
-                        <p class="mt-2">Gcash Number:</p>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        <input type="text" class="form-control" name="add-gcashnum" style="border-radius: 8px"
-                            placeholder="Gcahs Number"
-                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)" maxlength="11"
-                            required />
-                    </div>
-                </div>
-                <div class="row">
+                    <div class="row">
 
-                    <div class="col-4" align="right">
-                        <p class="mt-2">Reference No:</p>
+                        <div class="col-4" align="right">
+                            <p class="mt-2">Reference No:</p>
+                        </div>
+                        <div class="col-8"><input type="text" class="form-control" name="add-referenceno"
+                                style="border-radius: 8px" placeholder="Reference No"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)" maxlength="13"
+                                required /></div>
                     </div>
-                    <div class="col-8"><input type="text" class="form-control" name="add-referenceno"
-                            style="border-radius: 8px" placeholder="Reference No"
-                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)" maxlength="13"
-                            required /></div>
-                </div>
             </div>
 
 
@@ -472,6 +482,7 @@ if (isset($_SESSION['guestuserid'])) {
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="gcash-proceed">Continue</button>
             </div>
+            </form>
 
         </div>
     </div>
@@ -485,250 +496,263 @@ if (isset($_SESSION['guestuserid'])) {
 <script src="scripts/jquery.min.js"></script>
 <script src="scripts/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <?php include ("components/footer.php"); ?>
 
 
-
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("proceedButton").addEventListener("click", function() {
-        console.log("Clicked Proceed to Checkout button");
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("proceedButton").addEventListener("click", function () {
+            console.log("Clicked Proceed to Checkout button");
 
-        var paymentMethod = document.getElementById("paymentMethod").value;
+            var paymentMethod = document.getElementById("paymentMethod").value;
 
-        if (paymentMethod === "PayPal") {
-            // PayPal payment method
-            var container = document.getElementById("paypal-button-container");
-            container.innerHTML = "";
+            if (paymentMethod === "PayPal") {
+                // PayPal payment method
+                var container = document.getElementById("paypal-button-container");
+                container.innerHTML = "";
 
-            paypal.Buttons({
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                currency_code: 'PHP',
-                                value: '<?php echo $totalReservationPrice; ?>'
-                            }
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        var transactionID = details.id;
-
-                        console.log("Transaction ID:", transactionID);
-
-                        var xhrBookingCart = new XMLHttpRequest();
-                        xhrBookingCart.open("GET", "get_roomid.php", true);
-                        xhrBookingCart.onreadystatechange = function() {
-                            if (xhrBookingCart.readyState === 4 &&
-                                xhrBookingCart.status === 200) {
-                                var bookingCartData = JSON.parse(
-                                    xhrBookingCart
-                                    .responseText);
-                                var roomids = [];
-                                var roomfloor = [];
-                                var roomnumber = [];
-                                var adults = [];
-                                var children = [];
-                                var checkindates = [];
-                                var checkintimes = [];
-                                var checkoutdates = [];
-                                var checkouttimes = [];
-                                var prices = [];
-                                var reservationprices = [];
-
-                                for (var i = 0; i < bookingCartData
-                                    .length; i++) {
-                                    roomids.push(bookingCartData[i].roomid);
-                                    roomfloor.push(bookingCartData[i]
-                                        .roomfloor);
-                                    roomnumber.push(bookingCartData[i]
-                                        .roomnumber);
-                                    adults.push(bookingCartData[i].adults);
-                                    children.push(bookingCartData[i]
-                                        .children);
-                                    checkindates.push(bookingCartData[i]
-                                        .checkindate);
-                                    checkintimes.push(bookingCartData[i]
-                                        .checkintime);
-                                    checkoutdates.push(bookingCartData[i]
-                                        .checkoutdate);
-                                    checkouttimes.push(bookingCartData[i]
-                                        .checkouttime);
-                                    prices.push(bookingCartData[i].price);
-                                    reservationprices.push(bookingCartData[
-                                            i]
-                                        .reservationprice);
+                paypal.Buttons({
+                    createOrder: function (data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    currency_code: 'PHP',
+                                    value: '<?php echo $totalReservationPrice; ?>'
                                 }
+                            }]
+                        });
+                    },
+                    onApprove: function (data, actions) {
+                        return actions.order.capture().then(function (details) {
+                            var transactionID = details.id;
 
-                                var guestuserid =
-                                    '<?php echo $_SESSION['guestuserid']; ?>';
+                            console.log("Transaction ID:", transactionID);
 
-                                var xhrBooking = new XMLHttpRequest();
-                                xhrBooking.open("POST",
-                                    "insert_booking.php",
-                                    true);
-                                xhrBooking.setRequestHeader("Content-Type",
-                                    "application/x-www-form-urlencoded");
-                                xhrBooking.onreadystatechange = function() {
-                                    if (xhrBooking.readyState === 4 &&
-                                        xhrBooking.status === 200) {
-                                        console.log(xhrBooking
+                            var xhrBookingCart = new XMLHttpRequest();
+                            xhrBookingCart.open("GET", "get_roomid.php", true);
+                            xhrBookingCart.onreadystatechange = function () {
+                                if (xhrBookingCart.readyState === 4 &&
+                                    xhrBookingCart.status === 200) {
+                                    var bookingCartData = JSON.parse(
+                                        xhrBookingCart
                                             .responseText);
+                                    var roomids = [];
+                                    var roomfloor = [];
+                                    var roomnumber = [];
+                                    var adults = [];
+                                    var children = [];
+                                    var checkindates = [];
+                                    var checkintimes = [];
+                                    var checkoutdates = [];
+                                    var checkouttimes = [];
+                                    var prices = [];
+                                    var reservationprices = [];
+
+                                    for (var i = 0; i < bookingCartData
+                                        .length; i++) {
+                                        roomids.push(bookingCartData[i].roomid);
+                                        roomfloor.push(bookingCartData[i]
+                                            .roomfloor);
+                                        roomnumber.push(bookingCartData[i]
+                                            .roomnumber);
+                                        adults.push(bookingCartData[i].adults);
+                                        children.push(bookingCartData[i]
+                                            .children);
+                                        checkindates.push(bookingCartData[i]
+                                            .checkindate);
+                                        checkintimes.push(bookingCartData[i]
+                                            .checkintime);
+                                        checkoutdates.push(bookingCartData[i]
+                                            .checkoutdate);
+                                        checkouttimes.push(bookingCartData[i]
+                                            .checkouttime);
+                                        prices.push(bookingCartData[i].price);
+                                        reservationprices.push(bookingCartData[
+                                            i]
+                                            .reservationprice);
                                     }
-                                };
-                                var bookingData =
-                                    "transactionID=" + transactionID +
-                                    "&roomids=" + roomids.join(',') +
-                                    "&roomfloor=" + roomfloor.join(',') +
-                                    "&roomnumber=" + roomnumber.join(',') +
-                                    "&adults=" + adults.join(',') +
-                                    "&children=" + children.join(',') +
-                                    "&checkindates=" + checkindates.join(
-                                        ',') +
-                                    "&checkintimes=" + checkintimes.join(
-                                        ',') +
-                                    "&checkoutdates=" + checkoutdates.join(
-                                        ',') +
-                                    "&checkouttimes=" + checkouttimes.join(
-                                        ',') +
-                                    "&prices=" + prices.join(',') +
-                                    "&reservationprices=" +
-                                    reservationprices
-                                    .join(',') +
-                                    "&totalreservationprice=" +
-                                    '<?php echo $totalReservationPriceWithoutPromo; ?>' +
-                                    "&paymentMethod=" + paymentMethod +
-                                    "&guestuserid=" + guestuserid +
-                                    "&totalafterpromo=" +
-                                    '<?php echo $totalReservationPrice; ?>';
-                                console.log("Booking Data:", bookingData);
-                                xhrBooking.send(bookingData);
 
-                            }
-                        };
-                        xhrBookingCart.send();
-                        window.location.href =
-                            "book-confirm.php?transactionID=" +
-                            transactionID;
+                                    var guestuserid =
+                                        '<?php echo $_SESSION['guestuserid']; ?>';
 
-                    });
-                }
-            }).render('#paypal-button-container');
-        } else if (paymentMethod === "gcashqr") {
-            // GCash QR payment method
-            $('#reserveModal').modal('show');
+                                    var xhrBooking = new XMLHttpRequest();
+                                    xhrBooking.open("POST",
+                                        "insert_booking.php",
+                                        true);
+                                    xhrBooking.setRequestHeader("Content-Type",
+                                        "application/x-www-form-urlencoded");
+                                    xhrBooking.onreadystatechange = function () {
+                                        if (xhrBooking.readyState === 4 &&
+                                            xhrBooking.status === 200) {
+                                            console.log(xhrBooking
+                                                .responseText);
+                                        }
+                                    };
+                                    var bookingData =
+                                        "transactionID=" + transactionID +
+                                        "&roomids=" + roomids.join(',') +
+                                        "&roomfloor=" + roomfloor.join(',') +
+                                        "&roomnumber=" + roomnumber.join(',') +
+                                        "&adults=" + adults.join(',') +
+                                        "&children=" + children.join(',') +
+                                        "&checkindates=" + checkindates.join(
+                                            ',') +
+                                        "&checkintimes=" + checkintimes.join(
+                                            ',') +
+                                        "&checkoutdates=" + checkoutdates.join(
+                                            ',') +
+                                        "&checkouttimes=" + checkouttimes.join(
+                                            ',') +
+                                        "&prices=" + prices.join(',') +
+                                        "&reservationprices=" +
+                                        reservationprices
+                                            .join(',') +
+                                        "&totalreservationprice=" +
+                                        '<?php echo $totalReservationPriceWithoutPromo; ?>' +
+                                        "&paymentMethod=" + paymentMethod +
+                                        "&guestuserid=" + guestuserid +
+                                        "&totalafterpromo=" +
+                                        '<?php echo $totalReservationPrice; ?>';
+                                    console.log("Booking Data:", bookingData);
+                                    xhrBooking.send(bookingData);
 
-            document.getElementById("gcash-proceed").addEventListener("click", function() {
-                var gcashNumberInputs = document.querySelectorAll(
-                    "input[name='add-gcashnum']");
-                var referenceNoInputs = document.querySelectorAll(
-                    "input[name='add-referenceno']");
+                                }
+                            };
+                            xhrBookingCart.send();
+                            window.location.href =
+                                "book-confirm.php?transactionID=" +
+                                transactionID;
 
-                var gcashNumber = [];
-                var referenceNo = [];
-
-                gcashNumberInputs.forEach(function(input) {
-                    gcashNumber.push(input.value);
-                });
-
-                referenceNoInputs.forEach(function(input) {
-                    referenceNo.push(input.value);
-                });
-                console.log("Reference Number:", referenceNo);
-
-                var today = new Date();
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0');
-                var yyyy = today.getFullYear();
-                var hours = String(today.getHours()).padStart(2, '0');
-                var minutes = String(today.getMinutes()).padStart(2, '0');
-                var seconds = String(today.getSeconds()).padStart(2, '0');
-                var randomSuffix = Math.floor(Math.random() * 10000);
-                var transactionID = randomSuffix + mm + seconds + dd + hours + minutes +
-                    yyyy;
-
-                var xhrBookingCart = new XMLHttpRequest();
-                xhrBookingCart.open("GET", "get_roomid.php", true);
-                xhrBookingCart.onreadystatechange = function() {
-                    if (xhrBookingCart.readyState === 4 && xhrBookingCart.status ===
-                        200) {
-                        var bookingCartData = JSON.parse(xhrBookingCart.responseText);
-                        var roomids = [];
-                        var roomfloor = [];
-                        var roomnumber = [];
-                        var adults = [];
-                        var children = [];
-                        var checkindates = [];
-                        var checkintimes = [];
-                        var checkoutdates = [];
-                        var checkouttimes = [];
-                        var prices = [];
-                        var reservationprices = [];
-
-                        for (var i = 0; i < bookingCartData.length; i++) {
-                            roomids.push(bookingCartData[i].roomid);
-                            roomfloor.push(bookingCartData[i].roomfloor);
-                            roomnumber.push(bookingCartData[i].roomnumber);
-                            adults.push(bookingCartData[i].adults);
-                            children.push(bookingCartData[i].children);
-                            checkindates.push(bookingCartData[i].checkindate);
-                            checkintimes.push(bookingCartData[i].checkintime);
-                            checkoutdates.push(bookingCartData[i].checkoutdate);
-                            checkouttimes.push(bookingCartData[i].checkouttime);
-                            prices.push(bookingCartData[i].price);
-                            reservationprices.push(bookingCartData[i].reservationprice);
-                        }
-
-                        var guestuserid = '<?php echo $_SESSION['guestuserid']; ?>';
-
-                        var xhrBooking = new XMLHttpRequest();
-                        xhrBooking.open("POST", "insert_booking.php", true);
-                        xhrBooking.setRequestHeader("Content-Type",
-                            "application/x-www-form-urlencoded");
-                        xhrBooking.onreadystatechange = function() {
-                            if (xhrBooking.readyState === 4 && xhrBooking.status ===
-                                200) {
-                                console.log(xhrBooking.responseText);
-                            }
-                        };
-                        var bookingData =
-                            "transactionID=" + transactionID +
-                            "&roomids=" + roomids.join(',') +
-                            "&roomfloor=" + roomfloor.join(',') +
-                            "&roomnumber=" + roomnumber.join(',') +
-                            "&adults=" + adults.join(',') +
-                            "&children=" + children.join(',') +
-                            "&checkindates=" + checkindates.join(',') +
-                            "&checkintimes=" + checkintimes.join(',') +
-                            "&checkoutdates=" + checkoutdates.join(',') +
-                            "&checkouttimes=" + checkouttimes.join(',') +
-                            "&prices=" + prices.join(',') +
-                            "&reservationprices=" + reservationprices.join(',') +
-                            "&totalreservationprice=" +
-                            '<?php echo $totalReservationPriceWithoutPromo; ?>' +
-                            "&paymentMethod=" + paymentMethod +
-                            "&gcashNumber=" + gcashNumber +
-                            "&referenceNo=" + referenceNo +
-                            "&guestuserid=" + guestuserid +
-                            "&totalafterpromo=" +
-                            '<?php echo $totalReservationPrice; ?>';
-                        console.log("Booking Data:", bookingData);
-                        xhrBooking.send(bookingData);
-
+                        });
                     }
-                };
-                xhrBookingCart.send();
-                window.location.href = "book-confirm.php?transactionID=" + transactionID;
+                }).render('#paypal-button-container');
+            } else if (paymentMethod === "gcashqr") {
+                // GCash QR payment method
+                $('#reserveModal').modal('show');
 
-            });
-        } else {
-            alert("Proceeding with other payment method.");
-        }
+                document.getElementById("gcash-proceed").addEventListener("click", function () {
+                    var gcashNumberInputs = document.querySelectorAll(
+                        "input[name='add-gcashnum']");
+                    var referenceNoInputs = document.querySelectorAll(
+                        "input[name='add-referenceno']");
+
+                    var gcashNumber = [];
+                    var referenceNo = [];
+
+                    gcashNumberInputs.forEach(function (input) {
+                        if (!input.checkValidity()) {
+                            input.reportValidity();
+                            return;
+                        }
+                        gcashNumber.push(input.value);
+                    });
+
+                    referenceNoInputs.forEach(function (input) {
+                        if (!input.checkValidity()) {
+                            input.reportValidity();
+                            return;
+                        }
+                        referenceNo.push(input.value);
+                    });
+
+                    if (gcashNumber.length === 0 || referenceNo.length === 0) {
+                        return;
+                    }
+
+                    console.log("Reference Number:", referenceNo);
+
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0');
+                    var yyyy = today.getFullYear();
+                    var hours = String(today.getHours()).padStart(2, '0');
+                    var minutes = String(today.getMinutes()).padStart(2, '0');
+                    var seconds = String(today.getSeconds()).padStart(2, '0');
+                    var randomSuffix = Math.floor(Math.random() * 10000);
+                    var transactionID = randomSuffix + mm + seconds + dd + hours + minutes +
+                        yyyy;
+
+                    var xhrBookingCart = new XMLHttpRequest();
+                    xhrBookingCart.open("GET", "get_roomid.php", true);
+                    xhrBookingCart.onreadystatechange = function () {
+                        if (xhrBookingCart.readyState === 4 && xhrBookingCart.status ===
+                            200) {
+                            var bookingCartData = JSON.parse(xhrBookingCart.responseText);
+                            var roomids = [];
+                            var roomfloor = [];
+                            var roomnumber = [];
+                            var adults = [];
+                            var children = [];
+                            var checkindates = [];
+                            var checkintimes = [];
+                            var checkoutdates = [];
+                            var checkouttimes = [];
+                            var prices = [];
+                            var reservationprices = [];
+
+                            for (var i = 0; i < bookingCartData.length; i++) {
+                                roomids.push(bookingCartData[i].roomid);
+                                roomfloor.push(bookingCartData[i].roomfloor);
+                                roomnumber.push(bookingCartData[i].roomnumber);
+                                adults.push(bookingCartData[i].adults);
+                                children.push(bookingCartData[i].children);
+                                checkindates.push(bookingCartData[i].checkindate);
+                                checkintimes.push(bookingCartData[i].checkintime);
+                                checkoutdates.push(bookingCartData[i].checkoutdate);
+                                checkouttimes.push(bookingCartData[i].checkouttime);
+                                prices.push(bookingCartData[i].price);
+                                reservationprices.push(bookingCartData[i].reservationprice);
+                            }
+
+                            var guestuserid = '<?php echo $_SESSION['guestuserid']; ?>';
+
+                            var xhrBooking = new XMLHttpRequest();
+                            xhrBooking.open("POST", "insert_booking.php", true);
+                            xhrBooking.setRequestHeader("Content-Type",
+                                "application/x-www-form-urlencoded");
+                            xhrBooking.onreadystatechange = function () {
+                                if (xhrBooking.readyState === 4 && xhrBooking.status ===
+                                    200) {
+                                    console.log(xhrBooking.responseText);
+                                }
+                            };
+                            var bookingData =
+                                "transactionID=" + transactionID +
+                                "&roomids=" + roomids.join(',') +
+                                "&roomfloor=" + roomfloor.join(',') +
+                                "&roomnumber=" + roomnumber.join(',') +
+                                "&adults=" + adults.join(',') +
+                                "&children=" + children.join(',') +
+                                "&checkindates=" + checkindates.join(',') +
+                                "&checkintimes=" + checkintimes.join(',') +
+                                "&checkoutdates=" + checkoutdates.join(',') +
+                                "&checkouttimes=" + checkouttimes.join(',') +
+                                "&prices=" + prices.join(',') +
+                                "&reservationprices=" + reservationprices.join(',') +
+                                "&totalreservationprice=" +
+                                '<?php echo $totalReservationPriceWithoutPromo; ?>' +
+                                "&paymentMethod=" + paymentMethod +
+                                "&gcashNumber=" + gcashNumber +
+                                "&referenceNo=" + referenceNo +
+                                "&guestuserid=" + guestuserid +
+                                "&totalafterpromo=" +
+                                '<?php echo $totalReservationPrice; ?>';
+                            console.log("Booking Data:", bookingData);
+                            xhrBooking.send(bookingData);
+
+                        }
+                    };
+                    xhrBookingCart.send();
+                    window.location.href = "book-confirm.php?transactionID=" + transactionID;
+
+                });
+            } else {
+                alert("Proceeding with other payment method.");
+            }
+        });
     });
-});
 </script>
 
 </body>

@@ -28,7 +28,8 @@
 
                 </ul>
                 <div class="navbar-icons d-flex align-items-center">
-                    <a href="./auth/login.php" class="nav-link"><i class="fas fa-user"></i> Login </a>
+                    <div class="nav-links">
+                    </div>
                 </div>
             </div>
 
@@ -36,4 +37,5 @@
     </nav>
 
 </header>
-<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script src=" https://kit.fontawesome.com/a076d05399.js">
+</script>
